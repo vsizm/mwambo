@@ -96,7 +96,7 @@ export async function createEntry(formData: FormData) {
 }
 
 export async function updateEntry(formData: FormData) {
-  await requireEditorialAccess();
+  const user = await requireEditorialUser();
   if (!sql) throw new Error("Database is not configured.");
 
   const id = clean(formData.get("id"));
