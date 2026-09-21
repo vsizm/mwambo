@@ -66,6 +66,31 @@ export async function getPublishedEntry(slug: string) {
   return (rows[0] as KnowledgeEntry | undefined) ?? null;
 }
 
+export async function searchPublishedEntries(query: string) {
+  if (!sql) return [] as KnowledgeEntry[];
+  const term = query.trim();
+  if (!term) return [] as KnowledgeEntry[];
+  const pattern = `%${term}%`;
+  const rows = await sql`
+    select id, title, slug, summary, content, status, category_id,
+           historical_context, contemporary_context, variation_notes,
+           contributor_name, reviewer_name, reviewed_at, published_at
+    from knowledge_entries
+    where status = 'published'
+      and (
+        title ilike ${pattern}
+        or coalesce(summary, '') ilike ${pattern}
+        or content ilike ${pattern}
+        or coalesce(historical_context, '') ilike ${pattern}
+        or coalesce(contemporary_context, '') ilike ${pattern}
+        or coalesce(variation_notes, '') ilike ${pattern}
+      )
+    order by title
+    limit 50
+  `;
+  return rows as KnowledgeEntry[];
+}
+
 export async function getCategories(section: Category["section"]) {
   if (!sql) return [] as Category[];
   const rows = await sql`select id, name, slug, section, description from categories where section = ${section} order by name`;
