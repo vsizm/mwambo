@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { sql } from "../../lib/db";
-import { requireEditorialAccess } from "../../lib/editorial-auth";
+import { requireEditorialAccess, requireEditorialUser } from "../../lib/editorial-auth";
 
 const allowedTransitions: Record<string, string[]> = {
   draft: ["in_review", "archived"],
@@ -18,7 +18,8 @@ function clean(value: FormDataEntryValue | null) {
 }
 
 export async function transitionEntry(formData: FormData) {
-  const role = await requireEditorialAccess();
+  const user = await requireEditorialUser();
+  const role = user.role;
   if (!sql) throw new Error("Database is not configured.");
 
   const id = clean(formData.get("id"));
@@ -45,14 +46,14 @@ export async function transitionEntry(formData: FormData) {
 
   await sql`update knowledge_entries
     set status=${next},
-        reviewer_name=case when ${next} in ('verified','published','returned') then coalesce(reviewer_name, 'Editorial reviewer') else reviewer_name end,
+        reviewer_name=case when ${next} in ('verified','published','returned') then coalesce(reviewer_name, ${user.display_name ?? user.email ?? "Editorial reviewer"}) else reviewer_name end,
         reviewed_at=case when ${next} in ('verified','published','returned') then now() else reviewed_at end,
         published_at=case when ${next}='published' then coalesce(published_at, now()) when ${next}<>'published' then null else published_at end,
         updated_at=now()
     where id=${id}`;
 
-  await sql`insert into review_records (entry_id, previous_status, new_status, notes)
-    values (${id}, ${current}, ${next}, ${notes})`;
+  await sql`insert into review_records (entry_id, reviewer_id, previous_status, new_status, notes)
+    values (${id}, ${user.id}, ${current}, ${next}, ${notes})`;
 
   redirect(`/admin/entries/${id}`);
 }
