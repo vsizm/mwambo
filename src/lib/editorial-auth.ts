@@ -6,6 +6,35 @@ export type EditorialRole = "contributor" | "reviewer" | "editor" | "administrat
 
 const editorialRoles: EditorialRole[] = ["contributor", "reviewer", "editor", "administrator"];
 
+export async function syncAuthenticatedUser() {
+  if (!sql) return null;
+
+  const identity = await getAuthenticatedIdentity();
+  if (!identity) return null;
+
+  const rows = await sql`
+    insert into users (external_auth_id, display_name, email, role)
+    values (
+      ${identity.externalAuthId},
+      ${identity.displayName},
+      ${identity.email},
+      'reader'
+    )
+    on conflict (external_auth_id) do update
+      set display_name = excluded.display_name,
+          email = excluded.email
+    returning id, external_auth_id, display_name, email, role
+  `;
+
+  return rows[0] as {
+    id: string;
+    external_auth_id: string | null;
+    display_name: string | null;
+    email: string | null;
+    role: string;
+  } | undefined;
+}
+
 export async function getCurrentEditorialUser() {
   if (!sql) return null;
 
@@ -34,6 +63,8 @@ export async function getCurrentEditorialUser() {
 export async function requireEditorialUser() {
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
+
+  await syncAuthenticatedUser();
 
   const user = await getCurrentEditorialUser();
   if (!user) notFound();
