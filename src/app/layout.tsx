@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./simple.css";
+import "./simple-admin.css";
 
 export const metadata: Metadata = {
   title: { default: "Mwambo — Know Your Roots. Know Your Zambia.", template: "%s — Mwambo" },
