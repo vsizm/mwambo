@@ -1,8 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { sql } from "../../lib/db";
-import { requireEditorialAccess, requireEditorialUser } from "../../lib/editorial-auth";
+import { requireEditorialUser } from "../../lib/editorial-auth";
+import { withEditorialTransaction } from "../../lib/db-context";
 
 const allowedTransitions: Record<string, string[]> = {
   draft: ["in_review", "archived"],
@@ -20,7 +20,6 @@ function clean(value: FormDataEntryValue | null) {
 export async function transitionEntry(formData: FormData) {
   const user = await requireEditorialUser();
   const role = user.role;
-  if (!sql) throw new Error("Database is not configured.");
 
   const id = clean(formData.get("id"));
   const next = clean(formData.get("new_status"));
@@ -28,11 +27,8 @@ export async function transitionEntry(formData: FormData) {
 
   if (!id || !next) throw new Error("Entry and workflow status are required.");
 
-  const currentRows = await sql`select status from knowledge_entries where id=${id} limit 1`;
-  const current = String(currentRows[0]?.status ?? "");
-  if (!allowedTransitions[current]?.includes(next)) {
-    throw new Error(`Invalid workflow transition: ${current} → ${next}`);
-  }
+  const validNext = Object.values(allowedTransitions).some((statuses) => statuses.includes(next));
+  if (!validNext) throw new Error("Invalid workflow transition: " + next);
 
   if (next === "verified" && !["reviewer", "editor", "administrator"].includes(role)) {
     throw new Error("Only reviewers, editors or administrators can verify entries.");
@@ -44,23 +40,78 @@ export async function transitionEntry(formData: FormData) {
     throw new Error("Only reviewers, editors or administrators can return entries.");
   }
 
-  await sql`update knowledge_entries
-    set status=${next},
-        reviewer_name=case when ${next} in ('verified','published','returned') then coalesce(reviewer_name, ${user.display_name ?? user.email ?? "Editorial reviewer"}) else reviewer_name end,
-        reviewed_at=case when ${next} in ('verified','published','returned') then now() else reviewed_at end,
-        published_at=case when ${next}='published' then coalesce(published_at, now()) when ${next}<>'published' then null else published_at end,
-        updated_at=now()
-    where id=${id}`;
+  const result = await withEditorialTransaction(user, async (client) => {
+    const query = `
+      with current as (
+        select id, status
+        from knowledge_entries
+        where id = $1
+        for update
+      ),
+      updated as (
+        update knowledge_entries e
+        set status = $2,
+            reviewer_name = case
+              when $2 in ('verified','published','returned')
+              then coalesce(e.reviewer_name, $3)
+              else e.reviewer_name
+            end,
+            reviewed_at = case
+              when $2 in ('verified','published','returned') then now()
+              else e.reviewed_at
+            end,
+            published_at = case
+              when $2 = 'published' then coalesce(e.published_at, now())
+              when $2 <> 'published' then null
+              else e.published_at
+            end,
+            updated_at = now()
+        from current c
+        where e.id = c.id
+          and (
+            (c.status = 'draft' and $2 in ('in_review','archived'))
+            or (c.status = 'returned' and $2 in ('in_review','archived'))
+            or (c.status = 'in_review' and $2 in ('verified','returned','archived'))
+            or (c.status = 'verified' and $2 in ('published','returned','archived'))
+            or (c.status = 'published' and $2 = 'archived')
+          )
+          and (
+            ($2 = 'verified' and current_setting('app.role', true) in ('reviewer','editor','administrator'))
+            or ($2 = 'published' and current_setting('app.role', true) in ('editor','administrator'))
+            or ($2 = 'returned' and current_setting('app.role', true) in ('reviewer','editor','administrator'))
+            or ($2 in ('in_review','archived') and current_setting('app.role', true) in ('contributor','reviewer','editor','administrator'))
+          )
+        returning c.status as previous_status, e.status as new_status, e.id
+      )
+      insert into review_records (entry_id, reviewer_id, previous_status, new_status, notes)
+      select id,
+             (select id from users where external_auth_id = current_setting('app.external_auth_id', true) limit 1),
+             previous_status,
+             new_status,
+             $4
+      from updated
+      returning entry_id, previous_status, new_status
+    `;
 
-  await sql`insert into review_records (entry_id, reviewer_id, previous_status, new_status, notes)
-    values (${id}, ${user.id}, ${current}, ${next}, ${notes})`;
+    const response = await client.query(query, [
+      id,
+      next,
+      user.display_name ?? user.email ?? "Editorial reviewer",
+      notes
+    ]);
 
-  redirect(`/admin/entries/${id}`);
+    return response.rows[0] ?? null;
+  });
+
+  if (!result) {
+    throw new Error("The requested workflow transition was not permitted or the entry was not found.");
+  }
+
+  redirect("/admin/entries/" + id);
 }
 
 export async function createEntry(formData: FormData) {
-  await requireEditorialAccess();
-  if (!sql) throw new Error("Database is not configured.");
+  const user = await requireEditorialUser();
 
   const title = clean(formData.get("title"));
   const slug = clean(formData.get("slug"));
@@ -72,32 +123,43 @@ export async function createEntry(formData: FormData) {
   }
 
   const sourceIds = formData.getAll("source_ids").map(String);
-  const rows = await sql`insert into knowledge_entries
-    (title, slug, summary, content, category_id, historical_context, contemporary_context, variation_notes, contributor_name)
-    values (
-      ${title},
-      ${slug},
-      ${clean(formData.get("summary")) || null},
-      ${content},
-      ${categoryId},
-      ${clean(formData.get("historical_context")) || null},
-      ${clean(formData.get("contemporary_context")) || null},
-      ${clean(formData.get("variation_notes")) || null},
-      ${clean(formData.get("contributor_name")) || null}
-    )
-    returning id`;
+  const id = await withEditorialTransaction(user, async (client) => {
+    const result = await client.query(
+      `insert into knowledge_entries
+        (title, slug, summary, content, category_id, historical_context,
+         contemporary_context, variation_notes, contributor_name)
+       values ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+       returning id`,
+      [
+        title,
+        slug,
+        clean(formData.get("summary")) || null,
+        content,
+        categoryId,
+        clean(formData.get("historical_context")) || null,
+        clean(formData.get("contemporary_context")) || null,
+        clean(formData.get("variation_notes")) || null,
+        clean(formData.get("contributor_name")) || null
+      ]
+    );
 
-  const id = String(rows[0].id);
-  for (const sourceId of sourceIds) {
-    await sql`insert into entry_sources (entry_id, source_id) values (${id}, ${sourceId}) on conflict do nothing`;
-  }
+    const entryId = String(result.rows[0].id);
 
-  redirect(`/admin/entries/${id}`);
+    for (const sourceId of sourceIds) {
+      await client.query(
+        "insert into entry_sources (entry_id, source_id) values ($1,$2) on conflict do nothing",
+        [entryId, sourceId]
+      );
+    }
+
+    return entryId;
+  });
+
+  redirect("/admin/entries/" + id);
 }
 
 export async function updateEntry(formData: FormData) {
   const user = await requireEditorialUser();
-  if (!sql) throw new Error("Database is not configured.");
 
   const id = clean(formData.get("id"));
   const title = clean(formData.get("title"));
@@ -109,24 +171,49 @@ export async function updateEntry(formData: FormData) {
     throw new Error("Entry, title, slug, category and knowledge are required.");
   }
 
-  await sql`update knowledge_entries
-    set title=${title},
-        slug=${slug},
-        summary=${clean(formData.get("summary")) || null},
-        content=${content},
-        category_id=${categoryId},
-        historical_context=${clean(formData.get("historical_context")) || null},
-        contemporary_context=${clean(formData.get("contemporary_context")) || null},
-        variation_notes=${clean(formData.get("variation_notes")) || null},
-        contributor_name=${clean(formData.get("contributor_name")) || null},
-        updated_at=now()
-    where id=${id}`;
+  await withEditorialTransaction(user, async (client) => {
+    const updated = await client.query(
+      `update knowledge_entries
+       set title=$1,
+           slug=$2,
+           summary=$3,
+           content=$4,
+           category_id=$5,
+           historical_context=$6,
+           contemporary_context=$7,
+           variation_notes=$8,
+           contributor_name=$9,
+           updated_at=now()
+       where id=$10
+       returning id`,
+      [
+        title,
+        slug,
+        clean(formData.get("summary")) || null,
+        content,
+        categoryId,
+        clean(formData.get("historical_context")) || null,
+        clean(formData.get("contemporary_context")) || null,
+        clean(formData.get("variation_notes")) || null,
+        clean(formData.get("contributor_name")) || null,
+        id
+      ]
+    );
 
-  const sourceIds = formData.getAll("source_ids").map(String);
-  await sql`delete from entry_sources where entry_id=${id}`;
-  for (const sourceId of sourceIds) {
-    await sql`insert into entry_sources (entry_id, source_id) values (${id}, ${sourceId}) on conflict do nothing`;
-  }
+    if (!updated.rowCount) {
+      throw new Error("The entry could not be updated for this editorial role.");
+    }
 
-  redirect(`/admin/entries/${id}`);
+    const sourceIds = formData.getAll("source_ids").map(String);
+    await client.query("delete from entry_sources where entry_id=$1", [id]);
+
+    for (const sourceId of sourceIds) {
+      await client.query(
+        "insert into entry_sources (entry_id, source_id) values ($1,$2) on conflict do nothing",
+        [id, sourceId]
+      );
+    }
+  });
+
+  redirect("/admin/entries/" + id);
 }
