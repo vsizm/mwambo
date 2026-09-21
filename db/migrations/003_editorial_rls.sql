@@ -54,6 +54,9 @@ create policy knowledge_entries_editorial_insert on knowledge_entries
     and status = 'draft'
   );
 
+-- Database-level update boundary. The server action remains responsible for
+-- validating the exact workflow transition; RLS limits which resulting
+-- statuses each role can write.
 drop policy if exists knowledge_entries_editorial_update on knowledge_entries;
 create policy knowledge_entries_editorial_update on knowledge_entries
   for update
@@ -65,10 +68,21 @@ create policy knowledge_entries_editorial_update on knowledge_entries
     )
   )
   with check (
-    current_setting('app.role', true) in ('reviewer','editor','administrator')
-    or (
+    (
       current_setting('app.role', true) = 'contributor'
-      and status in ('draft','returned')
+      and status in ('draft','returned','in_review')
+    )
+    or (
+      current_setting('app.role', true) = 'reviewer'
+      and status in ('draft','in_review','verified','returned','archived')
+    )
+    or (
+      current_setting('app.role', true) = 'editor'
+      and status in ('draft','in_review','verified','published','returned','archived')
+    )
+    or (
+      current_setting('app.role', true) = 'administrator'
+      and status in ('draft','in_review','verified','published','returned','archived')
     )
   );
 
@@ -149,37 +163,6 @@ create policy review_records_editorial_insert on review_records
       from users
       where external_auth_id = nullif(current_setting('app.external_auth_id', true), '')
       limit 1
-    )
-  );
-
--- Workflow transitions are still enforced by the server action, while RLS
--- provides a second database boundary for status changes.
-drop policy if exists knowledge_entries_workflow_update on knowledge_entries;
-create policy knowledge_entries_workflow_update on knowledge_entries
-  for update
-  using (
-    current_setting('app.role', true) in ('reviewer','editor','administrator')
-    or (
-      current_setting('app.role', true) = 'contributor'
-      and status in ('draft','returned')
-    )
-  )
-  with check (
-    (
-      current_setting('app.role', true) = 'contributor'
-      and status in ('draft','in_review')
-    )
-    or (
-      current_setting('app.role', true) = 'reviewer'
-      and status in ('draft','in_review','verified','returned','archived')
-    )
-    or (
-      current_setting('app.role', true) = 'editor'
-      and status in ('draft','in_review','verified','published','returned','archived')
-    )
-    or (
-      current_setting('app.role', true) = 'administrator'
-      and status in ('draft','in_review','verified','published','returned','archived')
     )
   );
 
