@@ -6,57 +6,53 @@ export type EditorialRole = "contributor" | "reviewer" | "editor" | "administrat
 
 const editorialRoles: EditorialRole[] = ["contributor", "reviewer", "editor", "administrator"];
 
-export async function syncAuthenticatedUser() {
-  if (!sql) return null;
+type DbUser = {
+  id: string;
+  external_auth_id: string | null;
+  display_name: string | null;
+  email: string | null;
+  role: string;
+};
 
+function requireDatabase() {
+  if (!sql) throw new Error("Database is not configured.");
+  return sql;
+}
+
+export async function syncAuthenticatedUser() {
+  const db = requireDatabase();
   const identity = await getAuthenticatedIdentity();
   if (!identity) return null;
 
-  const rows = await sql`
-    insert into users (external_auth_id, display_name, email, role)
-    values (
-      ${identity.externalAuthId},
-      ${identity.displayName},
-      ${identity.email},
-      'reader'
-    )
-    on conflict (external_auth_id) do update
-      set display_name = excluded.display_name,
-          email = excluded.email
-    returning id, external_auth_id, display_name, email, role
-  `;
+  const [rows] = await db.transaction((txn) => [
+    txn`select set_config('app.external_auth_id', ${identity.externalAuthId}, true)`,
+    txn`insert into users (external_auth_id, display_name, email, role)
+      values (${identity.externalAuthId}, ${identity.displayName}, ${identity.email}, 'reader')
+      on conflict (external_auth_id) do update
+        set display_name = excluded.display_name,
+            email = excluded.email
+      returning id, external_auth_id, display_name, email, role`
+  ]);
 
-  return rows[0] as {
-    id: string;
-    external_auth_id: string | null;
-    display_name: string | null;
-    email: string | null;
-    role: string;
-  } | undefined;
+  return rows[0] as DbUser | undefined;
 }
 
 export async function getCurrentEditorialUser() {
-  if (!sql) return null;
-
+  const db = requireDatabase();
   const { userId } = await auth();
   if (!userId) return null;
 
-  const rows = await sql`
-    select id, external_auth_id, display_name, email, role
-    from users
-    where external_auth_id = ${userId}
-    limit 1
-  `;
+  const [, rows] = await db.transaction((txn) => [
+    txn`select set_config('app.external_auth_id', ${userId}, true)`,
+    txn`select id, external_auth_id, display_name, email, role
+      from users
+      where external_auth_id = ${userId}
+      limit 1`
+  ]);
 
-  const user = rows[0] as {
-    id: string;
-    external_auth_id: string | null;
-    display_name: string | null;
-    email: string | null;
-    role: string;
-  } | undefined;
-
+  const user = rows[0] as DbUser | undefined;
   if (!user || !editorialRoles.includes(user.role as EditorialRole)) return null;
+
   return { ...user, role: user.role as EditorialRole };
 }
 
