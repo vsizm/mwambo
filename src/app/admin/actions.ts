@@ -4,6 +4,21 @@ import { redirect } from "next/navigation";
 import { sql } from "../../lib/db";
 import { requireEditorialAccess } from "../../lib/editorial-auth";
 
+const allowedTransitions: Record<string, string[]> = { draft: ["in_review","archived"], returned: ["in_review","archived"], in_review: ["verified","returned","archived"], verified: ["published","returned","archived"], published: ["archived"], archived: [] };
+
+export async function transitionEntry(formData: FormData) {
+  await requireEditorialAccess();
+  if (!sql) throw new Error("Database is not configured.");
+  const id = String(formData.get("id") ?? "");
+  const next = String(formData.get("new_status") ?? "");
+  const currentRows = await sql`select status from knowledge_entries where id=${id} limit 1`;
+  const current = String(currentRows[0]?.status ?? "");
+  if (!allowedTransitions[current]?.includes(next)) throw new Error(`Invalid workflow transition: ${current} → ${next}`);
+  await sql`update knowledge_entries set status=${next}, reviewer_name=case when ${next} in ('verified','published') then 'Editorial reviewer' else reviewer_name end, reviewed_at=case when ${next} in ('verified','published') then now() else reviewed_at end, published_at=case when ${next}='published' then now() else published_at end, updated_at=now() where id=${id}`;
+  await sql`insert into review_records (entry_id,previous_status,new_status) values (${id},${current},${next})`;
+  redirect(`/admin/entries/${id}`);
+}
+
 export async function createEntry(formData: FormData) {
   await requireEditorialAccess();
   if (!sql) throw new Error("Database is not configured.");
