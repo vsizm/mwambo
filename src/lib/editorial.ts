@@ -1,4 +1,5 @@
-import { sql } from "./db";
+import { requireEditorialUser } from "./editorial-auth";
+import { withEditorialTransaction } from "./db-context";
 
 export type EditorialEntry = {
   id: string;
@@ -33,37 +34,80 @@ export type EditorialSource = {
 };
 
 export async function getEditorialEntries(status?: string) {
-  if (!sql) return [] as EditorialEntry[];
-  const rows = status
-    ? await sql`select e.*, c.name as category_name, c.section from knowledge_entries e left join categories c on c.id=e.category_id where e.status = ${status} order by e.updated_at desc`
-    : await sql`select e.*, c.name as category_name, c.section from knowledge_entries e left join categories c on c.id=e.category_id order by e.updated_at desc`;
-  return rows as EditorialEntry[];
+  const user = await requireEditorialUser();
+  return withEditorialTransaction(user, async (client) => {
+    const result = status
+      ? await client.query(`select e.*, c.name as category_name, c.section
+          from knowledge_entries e
+          left join categories c on c.id=e.category_id
+          where e.status = $1
+          order by e.updated_at desc`, [status])
+      : await client.query(`select e.*, c.name as category_name, c.section
+          from knowledge_entries e
+          left join categories c on c.id=e.category_id
+          order by e.updated_at desc`);
+    return result.rows as EditorialEntry[];
+  });
 }
 
 export async function getEditorialEntry(id: string) {
-  if (!sql) return null;
-  const rows = await sql`select e.*, c.name as category_name, c.section from knowledge_entries e left join categories c on c.id=e.category_id where e.id=${id} limit 1`;
-  return (rows[0] as EditorialEntry | undefined) ?? null;
+  const user = await requireEditorialUser();
+  return withEditorialTransaction(user, async (client) => {
+    const result = await client.query(
+      `select e.*, c.name as category_name, c.section
+       from knowledge_entries e
+       left join categories c on c.id=e.category_id
+       where e.id=$1
+       limit 1`,
+      [id]
+    );
+    return (result.rows[0] as EditorialEntry | undefined) ?? null;
+  });
 }
 
 export async function getEditorialCategories() {
-  if (!sql) return [];
-  return await sql`select id,name,slug,section from categories order by section,name`;
+  const user = await requireEditorialUser();
+  return withEditorialTransaction(user, async (client) => {
+    const result = await client.query(
+      "select id,name,slug,section from categories order by section,name"
+    );
+    return result.rows;
+  });
 }
 
 export async function getEditorialSources() {
-  if (!sql) return [] as EditorialSource[];
-  const rows = await sql`select id,title,source_type,author,publisher,publication_year,citation from sources order by title`;
-  return rows as EditorialSource[];
+  const user = await requireEditorialUser();
+  return withEditorialTransaction(user, async (client) => {
+    const result = await client.query(
+      "select id,title,source_type,author,publisher,publication_year,citation from sources order by title"
+    );
+    return result.rows as EditorialSource[];
+  });
 }
 
 export async function getEntrySourceIds(entryId: string) {
-  if (!sql) return [] as string[];
-  const rows = await sql`select source_id from entry_sources where entry_id=${entryId}`;
-  return rows.map((row) => String(row.source_id));
+  const user = await requireEditorialUser();
+  return withEditorialTransaction(user, async (client) => {
+    const result = await client.query(
+      "select source_id from entry_sources where entry_id=$1",
+      [entryId]
+    );
+    return result.rows.map((row) => String(row.source_id));
+  });
 }
 
 export async function getReviewHistory(entryId: string) {
-  if (!sql) return [];
-  return await sql`select rr.id,rr.previous_status,rr.new_status,rr.notes,rr.created_at,u.display_name,u.email from review_records rr left join users u on u.id=rr.reviewer_id where rr.entry_id=${entryId} order by rr.created_at desc`;
+  const user = await requireEditorialUser();
+  return withEditorialTransaction(user, async (client) => {
+    const result = await client.query(
+      `select rr.id,rr.previous_status,rr.new_status,rr.notes,rr.created_at,
+              u.display_name,u.email
+       from review_records rr
+       left join users u on u.id=rr.reviewer_id
+       where rr.entry_id=$1
+       order by rr.created_at desc`,
+      [entryId]
+    );
+    return result.rows;
+  });
 }
