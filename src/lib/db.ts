@@ -14,5 +14,6 @@ export type Category = {
 
 export async function getCategories(section: Category["section"]) {
   if (!sql) return [] as Category[];
-  return sql<Category[]>`select id, name, slug, section, description from categories where section = ${section} order by name`;
+  const rows = await sql`select id, name, slug, section, description from categories where section = ${section} order by name`;
+  return rows as Category[];
 }
