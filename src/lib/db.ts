@@ -41,6 +41,25 @@ export async function getPublishedEntriesByCategory(categoryId: string) {
   return rows as KnowledgeEntry[];
 }
 
+export type EntrySource = {
+  id: string;
+  title: string;
+  source_type: string;
+  author: string | null;
+  publisher: string | null;
+  publication_year: number | null;
+  url: string | null;
+  citation: string | null;
+  relevance_note: string | null;
+  primary_source: boolean;
+};
+
+export async function getEntrySources(entryId: string) {
+  if (!sql) return [] as EntrySource[];
+  const rows = await sql`select s.id, s.title, s.source_type, s.author, s.publisher, s.publication_year, s.url, s.citation, es.relevance_note, es.primary_source from entry_sources es join sources s on s.id = es.source_id where es.entry_id = ${entryId} order by es.primary_source desc, s.title`;
+  return rows as EntrySource[];
+}
+
 export async function getPublishedEntry(slug: string) {
   if (!sql) return null;
   const rows = await sql`select id, title, slug, summary, content, status, category_id, historical_context, contemporary_context, variation_notes, contributor_name, reviewer_name, reviewed_at, published_at from knowledge_entries where slug = ${slug} and status = 'published' limit 1`;
