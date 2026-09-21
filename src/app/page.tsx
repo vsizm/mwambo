@@ -2,7 +2,7 @@ const heritage = ["Zambia at a Glance","Culture & Tradition","Cultural Groups","
 const family = ["Zambian Marriages","Marriage Traditions","Family Systems","Marriage Preparation & Readiness","Family Care","Alangizi & Cultural Guidance","Community Values & Responsibilities"];
 
 function Pillar({title,eyebrow,items,href}:{title:string;eyebrow:string;items:string[];href:string}) {
-  return <section className="pillar">
+  return <section id={title.startsWith("Heritage") ? "heritage" : "family"} className="pillar">
     <div><p className="eyebrow">{eyebrow}</p><h2>{title}</h2><p className="muted">Explore carefully documented knowledge, with context and sources where available.</p></div>
     <div className="topic-grid">{items.map((item,i)=><a className="topic" href={href} key={item}><span>{String(i+1).padStart(2,"0")}</span><strong>{item}</strong><b>↗</b></a>)}</div>
   </section>
