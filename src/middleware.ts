@@ -2,11 +2,16 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 const isEditorialRoute = createRouteMatcher(["/admin(.*)"]);
 
-export default clerkMiddleware(async (auth, req) => {
-  if (isEditorialRoute(req)) {
-    await auth.protect();
-  }
-});
+export default clerkMiddleware(
+  async (auth, req) => {
+    if (isEditorialRoute(req)) {
+      await auth.protect();
+    }
+  },
+  () => ({
+    jwtKey: process.env.CLERK_JWT_KEY,
+  })
+);
 
 export const config = {
   matcher: [
