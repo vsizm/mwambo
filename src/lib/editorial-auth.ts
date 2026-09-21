@@ -24,7 +24,7 @@ export async function syncAuthenticatedUser() {
   const identity = await getAuthenticatedIdentity();
   if (!identity) return null;
 
-  const [rows] = await db.transaction((txn) => [
+  const [, rows] = await db.transaction((txn) => [
     txn`select set_config('app.external_auth_id', ${identity.externalAuthId}, true)`,
     txn`insert into users (external_auth_id, display_name, email, role)
       values (${identity.externalAuthId}, ${identity.displayName}, ${identity.email}, 'reader')
