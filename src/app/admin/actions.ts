@@ -126,6 +126,10 @@ export async function createEntry(formData: FormData) {
     throw new Error("Title, slug, category and knowledge are required.");
   }
 
+  if (!["contributor", "editor", "administrator"].includes(user.role)) {
+    throw new Error("Reviewers cannot create knowledge entries.");
+  }
+
   const sourceIds = formData.getAll("source_ids").map(String);
   const id = await withEditorialTransaction(user, async (client) => {
     const result = await client.query(
