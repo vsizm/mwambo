@@ -1,4 +1,4 @@
-import { getPublishedEntry, getEntrySources } from "../../lib/db";
+import { getPublishedEntry, getEntrySources } from "../../../lib/db";
 import { notFound } from "next/navigation";
 
 export default async function KnowledgeEntryPage({ params }: { params: Promise<{ slug: string }> }) {
