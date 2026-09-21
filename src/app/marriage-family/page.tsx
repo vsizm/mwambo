@@ -1,5 +1,5 @@
 import { getCategories } from "../../lib/db";
-import { familyFallback } from "@/lib/catalogue";
+import { familyFallback } from "../../lib/catalogue";
 
 export const metadata={title:"Marriage, Family & Community"};
 
