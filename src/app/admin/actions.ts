@@ -40,7 +40,7 @@ export async function transitionEntry(formData: FormData) {
     throw new Error("Only reviewers, editors or administrators can return entries.");
   }
 
-  const result = await withEditorialTransaction(user, async (client) => {
+  if (role === "contributor" && next !== "in_review") {\n    throw new Error("Contributors may only submit draft or returned entries for review.");\n  }\n\n  const result = await withEditorialTransaction(user, async (client) => {
     const query = `
       with current as (
         select id, status
@@ -171,7 +171,7 @@ export async function updateEntry(formData: FormData) {
     throw new Error("Entry, title, slug, category and knowledge are required.");
   }
 
-  await withEditorialTransaction(user, async (client) => {
+  await withEditorialTransaction(user, async (client) => {\n    const current = await client.query("select status from knowledge_entries where id=$1 for update", [id]);\n    const currentStatus = current.rows[0]?.status;\n    if (!currentStatus) throw new Error("The entry could not be found.");\n    if (user.role === "reviewer") throw new Error("Reviewers cannot edit knowledge entries.");\n    if (user.role === "contributor" && !["draft", "returned"].includes(String(currentStatus))) {\n      throw new Error("Contributors may only edit draft or returned entries.");\n    }\n    if (user.role === "editor" && String(currentStatus) === "published") {\n      throw new Error("Published entries must be archived before editorial changes are made.");\n    }
     const updated = await client.query(
       `update knowledge_entries
        set title=$1,
