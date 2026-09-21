@@ -1,5 +1,5 @@
-import { getCategoryBySlug, getPublishedEntriesByCategory } from "../../lib/db";
-import { familyFallback } from "../../lib/catalogue";
+import { getCategoryBySlug, getPublishedEntriesByCategory } from "../../../lib/db";
+import { familyFallback } from "../../../lib/catalogue";
 import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
