@@ -1,4 +1,4 @@
-import { getCategories } from "@/lib/db";
+import { getCategories } from "../../lib/db";
 import { heritageFallback } from "@/lib/catalogue";
 
 export const metadata={title:"Heritage & National Identity"};
