@@ -141,12 +141,12 @@ export default function MarriageReadinessAssessment() {
       <a className="back" href="/marriage-family">← Marriage, Family & Community</a>
       <p className="eyebrow">SECTION 02 · MARRIAGE PREPARATION & READINESS</p>
 
-      <div className="readiness-intro">
+      <div className="readiness-intro readiness-intro-single">
         <div>
+          <p className="eyebrow light-eyebrow">SECTION 02 · MARRIAGE PREPARATION & READINESS</p>
           <h1>Marriage Readiness & Preparedness</h1>
           <p>A confidential self-assessment for reflection before marriage. It explores communication, emotional maturity, finances, family expectations, cultural understanding, safety and practical preparation.</p>
         </div>
-        <div className="readiness-meta">10 CORE DOMAINS<br/>1–10 SCALE<br/>SELF-REFLECTION</div>
       </div>
 
       <div className="readiness-notice">
