@@ -45,7 +45,7 @@ export default function MarriageReadinessAssessment() {
     const pct = Math.round((total / (QUESTIONS.length * 10)) * 100);
     const focus = scores.filter(x => x.score <= 6);
     const strengths = scores.filter(x => x.score >= 8);
-    const tier = pct < 40 ? "Preparation Needed" : pct < 60 ? "Further Preparation Recommended" : "Positive Readiness Indicators";
+    const tier = pct < 50 ? "Preparation Needed" : pct < 75 ? "Further Preparation Recommended" : "Positive Readiness Indicators";
     return { scores, pct, focus, strengths, tier };
   }, [answers, submitted]);
 
@@ -107,7 +107,7 @@ export default function MarriageReadinessAssessment() {
           </div>
         </section>
 
-        <section className="readiness-panel scorecard">
+        <section className="readiness-panel scorecard">\n          <div className="result-legend" aria-label="Assessment result key"><span className="legend-good">Good</span><span className="legend-moderate">Moderate</span><span className="legend-bad">Needs attention</span></div>
           <p className="eyebrow">DOMAIN BREAKDOWN</p>
           <h2>10-domain scorecard</h2>
           {result.scores.map((x, i) => (
@@ -117,7 +117,7 @@ export default function MarriageReadinessAssessment() {
                 <p>{x.rationale}</p>
                 {x.score <= 6 && <small>{guidanceFor(x.category)}</small>}
               </div>
-              <div className="score-value">{x.score}/10</div>
+              <div className={`score-value ${x.score >= 8 ? "score-good" : x.score >= 5 ? "score-moderate" : "score-bad"}`}><strong>{x.score}/10</strong><span>{x.score >= 8 ? "Good" : x.score >= 5 ? "Moderate" : "Needs attention"}</span></div>
             </div>
           ))}
         </section>
