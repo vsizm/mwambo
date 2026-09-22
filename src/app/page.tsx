@@ -8,12 +8,33 @@ function Pillar({title,eyebrow,items,href}:{title:string;eyebrow:string;items:st
   </section>
 }
 
+function Navigation() {
+  return <nav className="nav" aria-label="Primary navigation">
+    <a className="brand" href="/">MWAMBO <small>KNOW YOUR ROOTS.</small></a>
+    <div className="navlinks">
+      <a href="/heritage">Heritage</a>
+      <a href="/marriage-family">Marriage & Family</a>
+      <a href="/about">About</a>
+    </div>
+    <a className="search" href="/search">Search <span>⌕</span></a>
+    <details className="mobile-nav">
+      <summary aria-label="Open navigation">Menu</summary>
+      <div className="mobile-menu">
+        <a href="/heritage">Heritage</a>
+        <a href="/marriage-family">Marriage & Family</a>
+        <a href="/about">About</a>
+        <a href="/search">Search</a>
+      </div>
+    </details>
+  </nav>
+}
+
 export default function Home() {
   return <main>
-    <nav className="nav"><a className="brand" href="/">MWAMBO <small>KNOW YOUR ROOTS.</small></a><div className="navlinks"><a href="#heritage">Heritage</a><a href="#family">Marriage & Family</a><a href="/about">About</a></div><a className="search" href="/search">Search <span>⌕</span></a></nav>
+    <Navigation />
     <header className="hero">
       <div className="hero-copy"><p className="eyebrow">ZAMBIAN CULTURE · HERITAGE · IDENTITY</p><h1>Know Your Roots.<br/><em>Know Your Zambia.</em></h1><p className="hero-text">Mwambo is being built as a trusted home for Zambian cultural knowledge — connecting people with heritage, traditions, languages, communities and family life.</p><div className="actions"><a className="button dark" href="#heritage">Explore Mwambo</a><a className="text-link" href="/about">Our approach →</a></div></div>
-      <div className="hero-art" aria-label="Decorative heritage panel"><div className="seal">M</div><p>MWAMBO</p><span>Heritage is living knowledge.</span></div>
+      <div className="hero-art" aria-label="The Mwambo archive"><div className="seal">M</div><p>MWAMBO</p><span>Heritage is living knowledge.</span></div>
     </header>
     <div className="strip"><span>BUILT FOR ZAMBIA</span><span>Human-reviewed knowledge</span><span>Regional variation respected</span><span>Sources & provenance</span></div>
     <div className="content">
