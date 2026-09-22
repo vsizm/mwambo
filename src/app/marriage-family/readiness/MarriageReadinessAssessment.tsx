@@ -80,6 +80,13 @@ export default function MarriageReadinessAssessment() {
               <div><span>01</span><strong>Understand marriage traditions</strong></div>
               <div><span>02</span><strong>Explore family systems and care</strong></div>
               <div><span>03</span><strong>Prepare for shared responsibilities</strong></div>
+              {result && (
+                <div className="hero-score">
+                  <span className="hero-score-label">YOUR READINESS SCORE</span>
+                  <strong>{result.pct}%</strong>
+                  <small>{result.tier}</small>
+                </div>
+              )}
             </div>
           </div>
         </section>
