@@ -15,3 +15,42 @@ footer{background:#061f35;color:#c7d8e2;padding:42px max(7vw,20px);display:flex;
 @media(max-width:900px){.navlinks,.nav>.nav-cta{display:none}.mobile-nav{display:block}.hero-inner,.intro,.focus-grid{grid-template-columns:1fr}.hero-path{margin-top:15px}.section-heading-row{display:block}.section-heading-row .button{margin-top:22px}.cards{grid-template-columns:1fr}}
 @media(max-width:600px){.learning-hero{padding:65px 0 70px}.hero-inner,.section-shell{width:min(100% - 28px,1160px)}.learning-hero h1{font-size:50px}.hero-lead{font-size:16px}.hero-meta{display:grid;grid-template-columns:1fr}.intro,.journeys,.learning-focus{padding:75px 0}.intro{gap:35px}.intro h2,.section-heading-row h2,.focus-grid h2{font-size:42px}.journey-item{grid-template-columns:42px 1fr 20px;padding:17px 10px}.journey-item strong{font-size:14px}.focus-grid{gap:45px}footer{display:block}footer p{margin-top:10px}.simple{width:min(100% - 28px,1160px)}}
 /* production sync: keep main deployment aligned with the VSI e-learning design system */
+
+
+/* Marriage readiness — VSI e-learning visual treatment */
+.readiness-page{max-width:none;margin:0;padding:0 0 90px;background:var(--paper)}
+.readiness-page>.back,.readiness-page>.eyebrow,.readiness-page>.readiness-intro,.readiness-page>.readiness-notice,.readiness-page>.readiness-form,.readiness-page>.readiness-head,.readiness-page>.readiness-grid,.readiness-page>.scorecard,.readiness-page>.readiness-panel,.readiness-page>.readiness-actions{width:min(1160px,calc(100% - 40px));margin-left:auto;margin-right:auto}
+.readiness-page>.back{display:block;padding-top:42px;color:var(--blue);font-weight:800}
+.readiness-page>.eyebrow{margin-top:28px}
+.readiness-intro,.readiness-head{background:var(--regal);color:#fff;border-radius:28px;padding:55px 60px;margin-top:18px;display:grid;grid-template-columns:1fr auto;gap:45px;align-items:center}
+.readiness-intro h1,.readiness-head h1{color:#fff;margin:0;font-size:clamp(42px,6vw,72px);line-height:.98;letter-spacing:-.055em}
+.readiness-intro p,.readiness-head p{max-width:760px;color:#dceaf2;line-height:1.75}
+.readiness-meta{border:1px solid rgba(255,255,255,.18);border-radius:22px;padding:22px 25px;color:var(--gold);font-size:11px;font-weight:900;line-height:1.9;letter-spacing:.12em}
+.readiness-notice{margin-top:22px;border-left:5px solid var(--yellow);background:#fff9df;padding:18px 22px;color:var(--ink);line-height:1.7}
+.readiness-form{margin-top:34px;display:grid;gap:18px}
+.question{background:#fff;border:1px solid var(--line);border-radius:24px;padding:30px;box-shadow:0 8px 28px rgba(0,53,102,.05)}
+.question-title>span{color:var(--baltic);font-size:10px;font-weight:900;letter-spacing:.14em}
+.question-title h2{color:var(--regal);font-size:26px;margin:8px 0}
+.question-title p{color:var(--ink);line-height:1.65;margin:0 0 7px}
+.question-title small{display:block;color:var(--muted);line-height:1.55}
+.scale{display:grid;grid-template-columns:repeat(10,1fr);gap:8px;margin-top:24px}
+.scale button{height:48px;border:1px solid #cbdbe3;border-radius:12px;background:#fff;color:var(--regal);font-weight:900;cursor:pointer}
+.scale button:hover{border-color:var(--blue);background:#eef5f8}
+.scale button.selected{background:var(--regal);border-color:var(--regal);color:#fff;box-shadow:0 5px 14px rgba(0,53,102,.18)}
+.scale-labels{display:flex;justify-content:space-between;gap:15px;margin-top:10px;color:var(--muted);font-size:10px;font-weight:700}
+.form-footer{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:25px 0}
+.form-footer button,.readiness-actions button,.readiness-actions a{border:0;border-radius:999px;padding:13px 20px;background:var(--regal);color:#fff;font-weight:900;cursor:pointer}
+.readiness-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.readiness-head{margin-top:18px}
+.readiness-score{background:var(--regal);border:1px solid rgba(255,255,255,.16);border-radius:24px;padding:25px 32px;text-align:center;min-width:180px}
+.readiness-score span{display:block;color:var(--gold);font-size:10px;font-weight:900;letter-spacing:.14em}
+.readiness-score strong{display:block;font-size:58px;line-height:1;margin-top:8px;color:#fff}
+.readiness-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+.readiness-panel{background:#fff;border:1px solid var(--line);border-radius:24px;padding:30px;box-shadow:0 8px 28px rgba(0,53,102,.05)}
+.readiness-panel h2{color:var(--regal);margin:5px 0 15px;font-size:28px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}.chips span{padding:9px 12px;border-radius:999px;background:#fff1f1;color:#b42318;border:1px solid #f2c2c2;font-size:11px;font-weight:800}.chips.strong span{background:#edf9f0;color:#16733a;border-color:#bfe3c8}
+.scorecard{margin-top:22px}
+.result-legend{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}.result-legend span{padding:7px 11px;border-radius:999px;font-size:10px;font-weight:900}.legend-good{background:#eaf7ee;color:#16733a}.legend-moderate{background:#fff6db;color:#9a6700}.legend-bad{background:#fff0f0;color:#b42318}
+.score-row{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;padding:18px 0;border-top:1px solid var(--line)}.score-row strong{color:var(--regal)}.score-row p{margin:6px 0;color:var(--muted);font-size:13px;line-height:1.5}.score-row small{display:block;margin-top:8px;color:var(--ink);line-height:1.5}
+.score-value{min-width:105px;text-align:center;border-radius:16px;padding:12px 14px}.score-value strong{display:block;font-size:20px}.score-value span{display:block;margin-top:3px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.score-good{background:#eaf7ee;border:1px solid #bfe3c8}.score-good strong,.score-good span{color:#16733a}.score-moderate{background:#fff6db;border:1px solid #f0d58a}.score-moderate strong,.score-moderate span{color:#9a6700}.score-bad{background:#fff0f0;border:1px solid #f2c2c2}.score-bad strong,.score-bad span{color:#b42318}
+@media(max-width:700px){.readiness-intro,.readiness-head{grid-template-columns:1fr;padding:38px 28px}.readiness-grid{grid-template-columns:1fr}.scale{gap:4px}.scale button{height:42px;padding:0}.scale-labels{font-size:9px}.score-row{grid-template-columns:1fr}.score-value{justify-self:start}.form-footer{display:block}.form-footer button{margin-top:15px}}
