@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import type { FormEvent } from "react";
 import { SiteHeader, SiteFooter } from "../../../components/SiteChrome";
 
 type Question = { id: number; category: string; prompt: string; rationale: string };
@@ -49,7 +50,7 @@ export default function MarriageReadinessAssessment() {
     return { scores, pct, focus, strengths, tier };
   }, [answers, submitted]);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = (e: FormEvent) => {
     e.preventDefault();
     if (Object.keys(answers).length < QUESTIONS.length) {
       window.alert("Please rate all 10 readiness domains before generating your report.");
