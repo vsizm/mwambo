@@ -32,11 +32,41 @@ function Navigation() {
 export default function Home() {
   return <main>
     <Navigation />
-    <header className="hero">
-      <div className="hero-copy"><p className="eyebrow">ZAMBIAN CULTURE · HERITAGE · IDENTITY</p><h1>Know Your Roots.<br/><em>Know Your Zambia.</em></h1><p className="hero-text">Mwambo is being built as a trusted home for Zambian cultural knowledge — connecting people with heritage, traditions, languages, communities and family life.</p><div className="actions"><a className="button dark" href="#heritage">Explore Mwambo</a><a className="text-link" href="/about">Our approach →</a></div></div>
-      <div className="hero-art" aria-label="The Mwambo archive"><div className="seal">M</div><p>MWAMBO</p><span>Heritage is living knowledge.</span></div>
+
+    <header className="hero mobile-inspired-hero">
+      <div className="hero-waterfall" aria-hidden="true">
+        <div className="waterfall-ridge ridge-one" />
+        <div className="waterfall-ridge ridge-two" />
+        <div className="waterfall-stream stream-one" />
+        <div className="waterfall-stream stream-two" />
+        <div className="waterfall-mist" />
+      </div>
+
+      <div className="hero-copy">
+        <div className="hero-national-mark">
+          <p>ONE ZAMBIA. ONE NATION</p>
+          <div className="flag-mark" aria-label="Zambian national colours">
+            <span /><span /><span /><span />
+          </div>
+        </div>
+        <p className="eyebrow">ZAMBIAN CULTURE · HERITAGE · IDENTITY</p>
+        <h1>MWAMBO</h1>
+        <p className="hero-subtitle">Know Your Roots. Know Your Zambia.</p>
+        <p className="hero-text">A trusted home for Zambian cultural knowledge — connecting people with heritage, traditions, languages, communities and family life.</p>
+        <div className="actions hero-actions">
+          <a className="button heritage-button" href="/heritage">Zambian Heritage & Identity</a>
+          <a className="button family-button" href="/marriage-family">Marriage & Family</a>
+        </div>
+      </div>
+      <div className="hero-art" aria-hidden="true">
+        <div className="seal">M</div>
+        <p>MWAMBO</p>
+        <span>Heritage is living knowledge.</span>
+      </div>
     </header>
+
     <div className="strip"><span>BUILT FOR ZAMBIA</span><span>Human-reviewed knowledge</span><span>Regional variation respected</span><span>Sources & provenance</span></div>
+
     <div className="content">
       <Pillar title="Heritage & National Identity" eyebrow="SECTION 01" items={heritage} href="/heritage"/>
       <Pillar title="Marriage, Family & Community" eyebrow="SECTION 02" items={family} href="/marriage-family"/>
