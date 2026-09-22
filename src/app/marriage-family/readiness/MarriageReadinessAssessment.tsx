@@ -132,7 +132,7 @@ export default function MarriageReadinessAssessment() {
           <button onClick={reset}>Retake assessment</button>
           <a href="/marriage-family">Return to Marriage & Family</a>
         </div>
-      </main>
+      </section><SiteFooter/></main>
     );
   }
 
@@ -182,6 +182,6 @@ export default function MarriageReadinessAssessment() {
           <button type="submit">Generate readiness assessment →</button>
         </div>
       </form>
-    </main>
+    </section><SiteFooter/></main>
   );
 }
