@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { SiteHeader, SiteFooter } from "../../../components/SiteChrome";
 
 type Question = { id: number; category: string; prompt: string; rationale: string };
 
@@ -65,7 +66,7 @@ export default function MarriageReadinessAssessment() {
 
   if (submitted && result) {
     return (
-      <main className="readiness-page">
+      <main><SiteHeader/><section className="readiness-page">
         <a className="back" href="/marriage-family">← Marriage, Family & Community</a>
         <p className="eyebrow">SECTION 02 · MARRIAGE PREPARATION & READINESS</p>
 
@@ -136,7 +137,7 @@ export default function MarriageReadinessAssessment() {
   }
 
   return (
-    <main className="readiness-page">
+    <main><SiteHeader/><section className="readiness-page">
       <a className="back" href="/marriage-family">← Marriage, Family & Community</a>
       <p className="eyebrow">SECTION 02 · MARRIAGE PREPARATION & READINESS</p>
 
