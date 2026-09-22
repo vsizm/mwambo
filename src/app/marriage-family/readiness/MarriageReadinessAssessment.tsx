@@ -68,13 +68,12 @@ export default function MarriageReadinessAssessment() {
     <main>
       <SiteHeader />
       <section className="readiness-page">
-        <section className="section-hero readiness-section-hero">
+        <section className="section-hero">
           <div className="section-hero-inner">
             <div>
-              <a className="readiness-section-back" href="/marriage-family">← Marriage, Family & Community</a>
-              <p className="kicker light">SECTION 02 · MARRIAGE PREPARATION & READINESS</p>
-              <h1>Marriage Readiness <em>& Preparedness</em></h1>
-              <p>A confidential self-assessment for reflection before marriage. It explores communication, emotional maturity, finances, family expectations, cultural understanding, safety and practical preparation.</p>
+              <p className="kicker light">02 · FAMILY</p>
+              <h1>Marriage, Family <em>& Community</em></h1>
+              <p>A practical learning journey through marriage traditions, family systems, preparation, care, cultural guidance and community responsibilities.</p>
             </div>
             <div className="hero-path compact">
               <p className="kicker light">LEARNING JOURNEY</p>
@@ -85,8 +84,16 @@ export default function MarriageReadinessAssessment() {
           </div>
         </section>
 
-        {submitted && result ? (
-          <>
+        <section className="section-content readiness-content">
+          <div className="section-heading-row">
+            <div>
+              <p className="kicker">02 · MARRIAGE PREPARATION</p>
+              <h2>Marriage Readiness <em>& Preparedness</em></h2>
+              <p className="lead">A confidential self-assessment for reflection before marriage. It explores communication, emotional maturity, finances, family expectations, cultural understanding, safety and practical preparation.</p>
+            </div>
+          </div>
+
+          {submitted && result ? (
             <div className="readiness-head">
               <div>
                 <p className="eyebrow">PRIVATE SELF-REFLECTION REPORT</p>
@@ -94,24 +101,7 @@ export default function MarriageReadinessAssessment() {
                 <p>This report is a conversation aid. It is not a clinical, legal or professional determination of whether a person or couple is ready for marriage.</p>
               </div>
             </div>
-
-            <div className="hero-path compact readiness-result-journey">
-              <p className="kicker">ASSESSMENT RESULT</p>
-              <div>
-                <span>01</span>
-                <strong>Composite readiness score</strong>
-                <b>{result.pct}%</b>
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="hero-path compact readiness-result-journey">
-            <p className="kicker">LEARNING JOURNEY</p>
-            <div><span>01</span><strong>Understand marriage traditions</strong></div>
-            <div><span>02</span><strong>Explore family systems and care</strong></div>
-            <div><span>03</span><strong>Prepare for shared responsibilities</strong></div>
-          </div>
-        )}
+          ) : null}
 
         {!submitted ? (
           <>
