@@ -109,7 +109,8 @@ export default function MarriageReadinessAssessment() {
           </div>
         </section>
 
-        <section className="readiness-panel scorecard">\n          <div className="result-legend" aria-label="Assessment result key"><span className="legend-good">Good</span><span className="legend-moderate">Moderate</span><span className="legend-bad">Needs attention</span></div>
+        <section className="readiness-panel scorecard">
+          <div className="result-legend" aria-label="Assessment result key"><span className="legend-good">Good</span><span className="legend-moderate">Moderate</span><span className="legend-bad">Needs attention</span></div>
           <p className="eyebrow">DOMAIN BREAKDOWN</p>
           <h2>10-domain scorecard</h2>
           {result.scores.map((x, i) => (
