@@ -68,12 +68,20 @@ export default function MarriageReadinessAssessment() {
     <main>
       <SiteHeader />
       <section className="readiness-page">
-        <section className="readiness-section-hero">
-          <div className="readiness-section-hero-inner">
-            <a className="readiness-section-back" href="/marriage-family">← Marriage, Family & Community</a>
-            <p className="kicker">SECTION 02 · MARRIAGE PREPARATION & READINESS</p>
-            <h1>Marriage Readiness & Preparedness</h1>
-            <p>A confidential self-assessment for reflection before marriage. It explores communication, emotional maturity, finances, family expectations, cultural understanding, safety and practical preparation.</p>
+        <section className="section-hero readiness-section-hero">
+          <div className="section-hero-inner">
+            <div>
+              <a className="readiness-section-back" href="/marriage-family">← Marriage, Family & Community</a>
+              <p className="kicker light">SECTION 02 · MARRIAGE PREPARATION & READINESS</p>
+              <h1>Marriage Readiness <em>& Preparedness</em></h1>
+              <p>A confidential self-assessment for reflection before marriage. It explores communication, emotional maturity, finances, family expectations, cultural understanding, safety and practical preparation.</p>
+            </div>
+            <div className="hero-path compact">
+              <p className="kicker light">LEARNING JOURNEY</p>
+              <div><span>01</span><strong>Understand marriage traditions</strong></div>
+              <div><span>02</span><strong>Explore family systems and care</strong></div>
+              <div><span>03</span><strong>Prepare for shared responsibilities</strong></div>
+            </div>
           </div>
         </section>
 
