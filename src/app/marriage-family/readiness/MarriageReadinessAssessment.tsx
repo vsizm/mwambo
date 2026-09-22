@@ -84,7 +84,7 @@ export default function MarriageReadinessAssessment() {
           </div>
         </section>
 
-        <section className="section-content readiness-content">
+        <section className="section-content">
           <div className="section-heading-row">
             <div>
               <p className="kicker">02 · MARRIAGE PREPARATION</p>
@@ -92,16 +92,6 @@ export default function MarriageReadinessAssessment() {
               <p className="lead">A confidential self-assessment for reflection before marriage. It explores communication, emotional maturity, finances, family expectations, cultural understanding, safety and practical preparation.</p>
             </div>
           </div>
-
-          {submitted && result ? (
-            <div className="readiness-head">
-              <div>
-                <p className="eyebrow">PRIVATE SELF-REFLECTION REPORT</p>
-                <h2>{result.tier}</h2>
-                <p>This report is a conversation aid. It is not a clinical, legal or professional determination of whether a person or couple is ready for marriage.</p>
-              </div>
-            </div>
-          ) : null}
 
         {!submitted ? (
           <>
@@ -194,6 +184,7 @@ export default function MarriageReadinessAssessment() {
             </div>
           </>
         ) : null}
+        </section>
       </section>
       <SiteFooter />
     </main>
