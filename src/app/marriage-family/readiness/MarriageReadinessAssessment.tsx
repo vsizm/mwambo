@@ -67,6 +67,8 @@ export default function MarriageReadinessAssessment() {
   if (submitted && result) {
     return (
       <main><SiteHeader/><section className="readiness-page">
+        <section className="section-hero readiness-section-hero"><div className="section-hero-inner"><div><p className="kicker light">02 · FAMILY</p><h1>Marriage, Family <em>& Community</em></h1><p>A practical learning journey through marriage traditions, family systems, preparation, care, cultural guidance and community responsibilities.</p></div><div className="hero-path compact"><p className="kicker light">LEARNING JOURNEY</p><div><span>01</span><strong>Understand marriage traditions</strong></div><div><span>02</span><strong>Explore family systems and care</strong></div><div><span>03</span><strong>Prepare for shared responsibilities</strong></div></div></div></section>
+        <div className="readiness-content">
         <a className="back" href="/marriage-family">← Marriage, Family & Community</a>
         <p className="eyebrow">SECTION 02 · MARRIAGE PREPARATION & READINESS</p>
 
@@ -132,7 +134,7 @@ export default function MarriageReadinessAssessment() {
           <button onClick={reset}>Retake assessment</button>
           <a href="/marriage-family">Return to Marriage & Family</a>
         </div>
-      </section><SiteFooter/></main>
+      </section></div><SiteFooter/></main>
     );
   }
 
