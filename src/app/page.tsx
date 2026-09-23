@@ -84,8 +84,7 @@ export default function Home(){
       <div className="landing-glow landing-glow-two" aria-hidden="true" />
 
       <div className="landing-inner">
-        <p className="landing-motto">ONE ZAMBIA. ONE NATION</p>
-        <div className="zambia-mark" aria-hidden="true"><span/><span/><span/><span/></div>
+        <p className="landing-motto"><span>ONE ZAMBIA.</span> <span>ONE NATION</span></p>
         <h1>MWAMBO</h1>
         <p className="landing-tagline">Know Your Roots. Know Zambia</p>
         <div className="landing-actions">
