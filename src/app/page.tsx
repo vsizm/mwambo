@@ -1,13 +1,62 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MarriageReadinessAssessment from "./marriage-family/readiness/MarriageReadinessAssessment";
 
 export default function Home(){
   const [readinessOpen,setReadinessOpen]=useState(false);
+  const heroRef=useRef<HTMLElement>(null);
+
+  useEffect(()=>{
+    const hero=heroRef.current;
+    if(!hero || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const handleMove=(event:PointerEvent)=>{
+      const rect=hero.getBoundingClientRect();
+      const x=(event.clientX-rect.left)/rect.width-.5;
+      const y=(event.clientY-rect.top)/rect.height-.5;
+      hero.style.setProperty("--mouse-x",`${x * 18}px`);
+      hero.style.setProperty("--mouse-y",`${y * 18}px`);
+      hero.style.setProperty("--glow-x",`${(x+.5)*100}%`);
+      hero.style.setProperty("--glow-y",`${(y+.5)*100}%`);
+
+      hero.querySelectorAll<HTMLElement>(".landing-button").forEach(button=>{
+        const b=button.getBoundingClientRect();
+        const bx=event.clientX-(b.left+b.width/2);
+        const by=event.clientY-(b.top+b.height/2);
+        const distance=Math.hypot(bx,by);
+        if(distance<150){
+          const strength=1-distance/150;
+          button.style.setProperty("--button-x",`${bx*0.08*strength}px`);
+          button.style.setProperty("--button-y",`${by*0.08*strength}px`);
+        }else{
+          button.style.setProperty("--button-x","0px");
+          button.style.setProperty("--button-y","0px");
+        }
+      });
+    };
+
+    const reset=()=>{
+      hero.style.setProperty("--mouse-x","0px");
+      hero.style.setProperty("--mouse-y","0px");
+      hero.style.setProperty("--glow-x","50%");
+      hero.style.setProperty("--glow-y","50%");
+      hero.querySelectorAll<HTMLElement>(".landing-button").forEach(button=>{
+        button.style.setProperty("--button-x","0px");
+        button.style.setProperty("--button-y","0px");
+      });
+    };
+
+    hero.addEventListener("pointermove",handleMove);
+    hero.addEventListener("pointerleave",reset);
+    return ()=>{
+      hero.removeEventListener("pointermove",handleMove);
+      hero.removeEventListener("pointerleave",reset);
+    };
+  },[]);
 
   return <main className="mwambo-landing">
-    <section className="landing-hero" aria-label="Mwambo">
+    <section ref={heroRef} className="landing-hero" aria-label="Mwambo">
       <div className="network-bg" aria-hidden="true">
         <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
           <g className="network-lines" fill="none" stroke="currentColor">
