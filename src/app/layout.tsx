@@ -3,6 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import "./simple.css";
 import "./simple-admin.css";
+import CookieConsent from "../components/CookieConsent";
 
 export const metadata: Metadata = {
   title: { default: "Mwambo — Know Your Roots. Know Your Zambia.", template: "%s — Mwambo" },
@@ -13,7 +14,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <ClerkProvider>
       <html lang="en">
-        <body>{children}</body>
+        <body>{children}<CookieConsent /></body>
       </html>
     </ClerkProvider>
   );
