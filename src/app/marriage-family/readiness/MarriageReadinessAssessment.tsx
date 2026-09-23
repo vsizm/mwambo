@@ -36,7 +36,7 @@ function guidanceFor(category: string) {
 
 export default function MarriageReadinessAssessment({ popup = false, onClose }: { popup?: boolean; onClose?: () => void }) {
   const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(false);\n  const [advisoryOpen, setAdvisoryOpen] = useState(popup);
 
   const result = useMemo(() => {
     if (!submitted) return null;
@@ -70,7 +70,7 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
       {popup && (
         <div className="readiness-modal" role="dialog" aria-modal="true">
           <div className="readiness-modal-card">
-            <button className="readiness-modal-close" type="button" onClick={onClose} aria-label="Close assessment">×</button>
+            <button className="readiness-modal-close" type="button" onClick={() => setAdvisoryOpen(false)} aria-label="Close advisory">×</button>
             <p className="kicker">ADVISORY</p>
             <p className="readiness-advisory">A confidential self-assessment for reflection before marriage. It explores communication, emotional maturity, finances, family expectations, cultural understanding, safety and practical preparation.</p>
             <p className="readiness-advisory">There is no universal score that can determine whether a person or couple should marry. Answer honestly and use the results to identify conversations that deserve more attention.</p>
