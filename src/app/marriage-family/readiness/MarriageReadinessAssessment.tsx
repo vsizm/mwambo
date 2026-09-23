@@ -36,7 +36,8 @@ function guidanceFor(category: string) {
 
 export default function MarriageReadinessAssessment({ popup = false, onClose }: { popup?: boolean; onClose?: () => void }) {
   const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [submitted, setSubmitted] = useState(false);\n  const [advisoryOpen, setAdvisoryOpen] = useState(popup);
+  const [submitted, setSubmitted] = useState(false);
+  const [advisoryOpen, setAdvisoryOpen] = useState(popup);
 
   const result = useMemo(() => {
     if (!submitted) return null;
@@ -67,7 +68,7 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
   return (
     <>
       {!popup && <SiteHeader />}
-      {popup && (
+      {popup && advisoryOpen && (
         <div className="readiness-modal" role="dialog" aria-modal="true">
           <div className="readiness-modal-card">
             <button className="readiness-modal-close" type="button" onClick={() => setAdvisoryOpen(false)} aria-label="Close advisory">×</button>
