@@ -89,7 +89,8 @@ export default function Home(){
         <p className="landing-tagline">Know Your Roots. Know Zambia</p>
         <div className="landing-actions">
           <button type="button" className="landing-button readiness" onClick={()=>setReadinessOpen(true)}>Marriage Readiness Test</button>
-          <a className="landing-button community" href="/marriage-family">Marriage, Family &amp; Community</a>
+          <button type="button" className="landing-button community landing-button-disabled" disabled aria-disabled="true">Marriage, Family &amp; Community</button>
+          <button type="button" className="landing-button heritage landing-button-disabled" disabled aria-disabled="true">Heritage and Identity</button>
         </div>
       </div>
     </section>
