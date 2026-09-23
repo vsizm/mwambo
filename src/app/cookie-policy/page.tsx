@@ -1,0 +1,10 @@
+import { SiteHeader, SiteFooter } from "../../components/SiteChrome";
+export const metadata={title:"Cookie Policy"};
+export default function CookiePolicy(){return <main><SiteHeader/><article className="legal-page"><p className="kicker">MWAMBO · COOKIES</p><h1>Cookie Policy</h1><p className="legal-lead">This policy explains how Mwambo uses cookies and similar browser storage. Our approach is intentionally limited: we do not currently use advertising or analytics cookies.</p><p className="legal-updated">Last updated: 23 September 2026</p>
+<section><h2>1. What are cookies?</h2><p>Cookies are small pieces of information stored by a website in your browser. They can help a website remember settings, maintain sessions and understand how a service is used.</p></section>
+<section><h2>2. What Mwambo currently uses</h2><p>Mwambo currently uses a first-party cookie named <code>mwambo_cookie_consent</code> to remember that you have acknowledged the site's cookie notice. It is used for the privacy preference itself and is not used to build an advertising profile.</p></section>
+<section><h2>3. What we do not currently use</h2><p>Mwambo does not currently use third-party advertising cookies, behavioural advertising cookies or analytics cookies. If optional analytics or similar technologies are introduced, this policy and the site's consent controls will be updated before they are used where consent is required.</p></section>
+<section><h2>4. Managing cookies</h2><p>You can control or delete cookies through your browser settings. Blocking all cookies may affect how some websites function. Mwambo's current consent cookie is not required to read public information on the site.</p></section>
+<section><h2>5. Changes</h2><p>We may update this policy when our use of cookies or similar technologies changes. The latest version will always be published on this page.</p></section>
+<div className="legal-reference"><strong>Related policies</strong><p>For information about personal data more broadly, please read the <a href="/privacy-policy">Privacy Policy</a> and <a href="/data-protection">Data Protection</a> page.</p></div>
+</article><SiteFooter/></main>}
