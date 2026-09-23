@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import "./simple.css";
 import "./simple-admin.css";
@@ -14,7 +15,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <ClerkProvider>
       <html lang="en">
-        <body>{children}<CookieConsent /></body>
+        <body>{children}<CookieConsent /><Analytics /></body>
       </html>
     </ClerkProvider>
   );
