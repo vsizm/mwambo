@@ -112,3 +112,8 @@ footer{background:#061f35;color:#c7d8e2;padding:42px max(7vw,20px);display:flex;
   .network-bg,.network-dots,.network-dots circle{transition:none;animation:none;transform:none}
   .network-bg:after{display:none}
 }
+.landing-button-disabled{opacity:.48;cursor:not-allowed;box-shadow:none!important;filter:saturate(.55)}
+.landing-button-disabled:hover{transform:none!important;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.22)}
+.landing-button.heritage{background:rgba(255,255,255,.07);color:#fff;border-color:rgba(255,255,255,.28);backdrop-filter:blur(8px)}
+.navlink-disabled,.mobile-link-disabled{color:#8a9aa7;cursor:not-allowed;user-select:none}
+.mobile-link-disabled{display:block;padding:13px;border-bottom:1px solid var(--line);font-size:13px;font-weight:700}
