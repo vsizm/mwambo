@@ -65,135 +65,157 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
   };
 
   return (
-    <main>
-      <SiteHeader />
-      <section className="readiness-page">
-        {!popup && <section className="section-hero">
-          <div className="section-hero-inner">
-            <div>
-              <p className="kicker light">02 · FAMILY</p>
-              <h1>Marriage, Family <em>& Community</em></h1>
-              <p>A practical learning journey through marriage traditions, family systems, preparation, care, cultural guidance and community responsibilities.</p>
+    <>
+      {!popup && <SiteHeader />}
+      {popup && (
+        <div className="readiness-modal" role="dialog" aria-modal="true">
+          <div className="readiness-modal-card">
+            <button className="readiness-modal-close" type="button" onClick={onClose} aria-label="Close assessment">×</button>
+            <p className="kicker">ADVISORY</p>
+            <p className="readiness-advisory">A confidential self-assessment for reflection before marriage. It explores communication, emotional maturity, finances, family expectations, cultural understanding, safety and practical preparation.</p>
+            <p className="readiness-advisory">There is no universal score that can determine whether a person or couple should marry. Answer honestly and use the results to identify conversations that deserve more attention.</p>
+          </div>
+        </div>
+      )}
+      <section className={popup ? "readiness-page readiness-modal-page" : "readiness-page"}>
+        {!popup && (
+          <section className="section-hero">
+            <div className="section-hero-inner">
+              <div>
+                <p className="kicker light">02 · FAMILY</p>
+                <h1>Marriage, Family <em>& Community</em></h1>
+                <p>A practical learning journey through marriage traditions, family systems, preparation, care, cultural guidance and community responsibilities.</p>
+              </div>
+              <div className="hero-path compact">
+                <p className="kicker light">LEARNING JOURNEY</p>
+                <div><span>01</span><strong>Understand marriage traditions</strong></div>
+                <div><span>02</span><strong>Explore family systems and care</strong></div>
+                <div><span>03</span><strong>Prepare for shared responsibilities</strong></div>
+                {result && (
+                  <div className="hero-score">
+                    <span className="hero-score-label">YOUR READINESS SCORE</span>
+                    <strong>{result.pct}%</strong>
+                    <small>{result.tier}</small>
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="hero-path compact">
-              <p className="kicker light">LEARNING JOURNEY</p>
-              <div><span>01</span><strong>Understand marriage traditions</strong></div>
-              <div><span>02</span><strong>Explore family systems and care</strong></div>
-              <div><span>03</span><strong>Prepare for shared responsibilities</strong></div>
-              {result && (
-                <div className="hero-score">
-                  <span className="hero-score-label">YOUR READINESS SCORE</span>
+          </section>
+        )}
+
+        <section className={popup ? "section-content readiness-modal-content" : "section-content"}>
+          {!popup && (
+            <div className="section-heading-row">
+              <div>
+                <p className="kicker">02 · MARRIAGE PREPARATION</p>
+                <h2>Marriage Readiness <em>& Preparedness</em></h2>
+                <p className="lead">A confidential self-assessment for reflection before marriage. It explores communication, emotional maturity, finances, family expectations, cultural understanding, safety and practical preparation.</p>
+              </div>
+            </div>
+          )}
+
+          {!submitted ? (
+            <>
+              {!popup && (
+                <div className="readiness-notice">
+                  There is no universal score that can determine whether a person or couple should marry. Answer honestly and use the results to identify conversations that deserve more attention.
+                </div>
+              )}
+              <form onSubmit={submit} className="readiness-form">
+                {QUESTIONS.map((q, i) => {
+                  const value = answers[q.id];
+                  return (
+                    <section className="question" key={q.id}>
+                      <div className="question-title">
+                        <span>DOMAIN {i + 1}</span>
+                        <h2>{q.category}</h2>
+                        <p>{q.prompt}</p>
+                        <small>{q.rationale}</small>
+                      </div>
+                      <div className="scale" role="group" aria-label={q.category}>
+                        {[1,2,3,4,5,6,7,8,9,10].map(n => (
+                          <button type="button" key={n} aria-pressed={value === n} className={value === n ? "selected" : ""} onClick={() => setAnswers(a => ({ ...a, [q.id]: n }))}>{n}</button>
+                        ))}
+                      </div>
+                      <div className="scale-labels">
+                        <span>1 · Significant preparation needed</span>
+                        <span>5 · Discussion needed</span>
+                        <span>10 · Strong alignment</span>
+                      </div>
+                    </section>
+                  );
+                })}
+                <div className="form-footer">
+                  <span>{Object.keys(answers).length} of 10 domains rated</span>
+                  <button type="submit">Generate readiness assessment →</button>
+                </div>
+              </form>
+            </>
+          ) : result ? (
+            <>
+              {popup && (
+                <div className="popup-score-result">
+                  <span>YOUR READINESS SCORE</span>
                   <strong>{result.pct}%</strong>
                   <small>{result.tier}</small>
                 </div>
               )}
-            </div>
-          </div>
-        </section>
-
-        <section className="section-content">
-          <div className="section-heading-row">
-            <div>
-              <p className="kicker">02 · MARRIAGE PREPARATION</p>
-              <h2>Marriage Readiness <em>& Preparedness</em></h2>
-              <p className="lead">A confidential self-assessment for reflection before marriage. It explores communication, emotional maturity, finances, family expectations, cultural understanding, safety and practical preparation.</p>
-            </div>
-          </div>
-
-        {!submitted ? (
-          <>
-            <div className="readiness-notice">
-              There is no universal score that can determine whether a person or couple should marry. Answer honestly and use the results to identify conversations that deserve more attention.
-            </div>
-
-            <form onSubmit={submit} className="readiness-form">
-              {QUESTIONS.map((q, i) => {
-                const value = answers[q.id];
-                return (
-                  <section className="question" key={q.id}>
-                    <div className="question-title">
-                      <span>DOMAIN {i + 1}</span>
-                      <h2>{q.category}</h2>
-                      <p>{q.prompt}</p>
-                      <small>{q.rationale}</small>
-                    </div>
-                    <div className="scale" role="group" aria-label={q.category}>
-                      {[1,2,3,4,5,6,7,8,9,10].map(n => (
-                        <button type="button" key={n} aria-pressed={value === n} className={value === n ? "selected" : ""} onClick={() => setAnswers(a => ({ ...a, [q.id]: n }))}>{n}</button>
-                      ))}
-                    </div>
-                    <div className="scale-labels">
-                      <span>1 · Significant preparation needed</span>
-                      <span>5 · Discussion needed</span>
-                      <span>10 · Strong alignment</span>
-                    </div>
-                  </section>
-                );
-              })}
-              <div className="form-footer">
-                <span>{Object.keys(answers).length} of 10 domains rated</span>
-                <button type="submit">Generate readiness assessment →</button>
+              <div className="readiness-notice">
+                A score does not make a marriage decision for you. Use the areas below to identify conversations that deserve more attention. Where appropriate, consider guidance from a trusted Alangizi, family elder, counsellor or other qualified adviser.
               </div>
-            </form>
-          </>
-        ) : result ? (
-          <>
-            <div className="readiness-notice">
-              A score does not make a marriage decision for you. Use the areas below to identify conversations that deserve more attention. Where appropriate, consider guidance from a trusted Alangizi, family elder, counsellor or other qualified adviser.
-            </div>
 
-            </>\n            <section className="readiness-grid">
-              <div className="readiness-panel">
-                <p className="eyebrow">AREAS TO EXPLORE</p>
-                <h2>Topics for further discussion</h2>
-                {result.focus.length ? (
-                  <div className="chips">{result.focus.map(x => <span key={x.category}>{x.category}</span>)}</div>
-                ) : (
-                  <p>No domain fell within the focused-discussion threshold. Continue revisiting these conversations as circumstances change.</p>
-                )}
-              </div>
-              <div className="readiness-panel">
-                <p className="eyebrow">FOUNDATIONAL AREAS</p>
-                <h2>Strong indicators</h2>
-                {result.strengths.length ? (
-                  <div className="chips strong">{result.strengths.map(x => <span key={x.category}>{x.category}</span>)}</div>
-                ) : (
-                  <p>No domain reached the strong-indicator threshold. This is an invitation for further reflection, not a judgment.</p>
-                )}
-              </div>
-            </section>
-
-            <section className="readiness-panel scorecard">
-              <div className="result-legend" aria-label="Assessment result key"><span className="legend-good">Good</span><span className="legend-moderate">Moderate</span><span className="legend-bad">Needs attention</span></div>
-              <p className="eyebrow">DOMAIN BREAKDOWN</p>
-              <h2>10-domain scorecard</h2>
-              {result.scores.map((x, i) => (
-                <div className="score-row" key={x.id}>
-                  <div>
-                    <strong>{i + 1}. {x.category}</strong>
-                    <p>{x.rationale}</p>
-                    {x.score <= 6 && <small>{guidanceFor(x.category)}</small>}
-                  </div>
-                  <div className={`score-value ${x.score >= 8 ? "score-good" : x.score >= 5 ? "score-moderate" : "score-bad"}`}><strong>{x.score}/10</strong><span>{x.score >= 8 ? "Good" : x.score >= 5 ? "Moderate" : "Needs attention"}</span></div>
+              <section className="readiness-grid">
+                <div className="readiness-panel">
+                  <p className="eyebrow">AREAS TO EXPLORE</p>
+                  <h2>Topics for further discussion</h2>
+                  {result.focus.length ? (
+                    <div className="chips">{result.focus.map(x => <span key={x.category}>{x.category}</span>)}</div>
+                  ) : (
+                    <p>No domain fell within the focused-discussion threshold. Continue revisiting these conversations as circumstances change.</p>
+                  )}
                 </div>
-              ))}
-            </section>
+                <div className="readiness-panel">
+                  <p className="eyebrow">FOUNDATIONAL AREAS</p>
+                  <h2>Strong indicators</h2>
+                  {result.strengths.length ? (
+                    <div className="chips strong">{result.strengths.map(x => <span key={x.category}>{x.category}</span>)}</div>
+                  ) : (
+                    <p>No domain reached the strong-indicator threshold. This is an invitation for further reflection, not a judgment.</p>
+                  )}
+                </div>
+              </section>
 
-            <section className="readiness-panel">
-              <p className="eyebrow">CULTURAL CONTEXT</p>
-              <h2>Make room for family and cultural context</h2>
-              <p>Zambian marriage practices vary across cultural groups, families and circumstances. Use this assessment alongside informed conversations about customary expectations, family relationships, responsibilities and any civil or customary process relevant to you.</p>
-            </section>
+              <section className="readiness-panel scorecard">
+                <div className="result-legend" aria-label="Assessment result key"><span className="legend-good">Good</span><span className="legend-moderate">Moderate</span><span className="legend-bad">Needs attention</span></div>
+                <p className="eyebrow">DOMAIN BREAKDOWN</p>
+                <h2>10-domain scorecard</h2>
+                {result.scores.map((x, i) => (
+                  <div className="score-row" key={x.id}>
+                    <div>
+                      <strong>{i + 1}. {x.category}</strong>
+                      <p>{x.rationale}</p>
+                      {x.score <= 6 && <small>{guidanceFor(x.category)}</small>}
+                    </div>
+                    <div className={`score-value ${x.score >= 8 ? "score-good" : x.score >= 5 ? "score-moderate" : "score-bad"}`}><strong>{x.score}/10</strong><span>{x.score >= 8 ? "Good" : x.score >= 5 ? "Moderate" : "Needs attention"}</span></div>
+                  </div>
+                ))}
+              </section>
 
-            <div className="readiness-actions">
-              <button onClick={reset}>Retake assessment</button>
-              <a href="/marriage-family">Return to Marriage & Family</a>
-            </div>
-          </>
-        ) : null}
+              <section className="readiness-panel">
+                <p className="eyebrow">CULTURAL CONTEXT</p>
+                <h2>Make room for family and cultural context</h2>
+                <p>Zambian marriage practices vary across cultural groups, families and circumstances. Use this assessment alongside informed conversations about customary expectations, family relationships, responsibilities and any civil or customary process relevant to you.</p>
+              </section>
+
+              <div className="readiness-actions">
+                <button onClick={reset}>Retake assessment</button>
+                {popup ? <button onClick={onClose}>Close assessment</button> : <a href="/marriage-family">Return to Marriage & Family</a>}
+              </div>
+            </>
+          ) : null}
         </section>
       </section>
-      <SiteFooter />
-    </main>
+      {!popup && <SiteFooter />}
+    </>
   );
 }
