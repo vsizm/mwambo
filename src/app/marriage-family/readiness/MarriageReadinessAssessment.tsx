@@ -34,7 +34,7 @@ function guidanceFor(category: string) {
   return guidance[category] ?? "Use this area as a prompt for an honest conversation and, where useful, seek appropriate guidance.";
 }
 
-export default function MarriageReadinessAssessment() {
+export default function MarriageReadinessAssessment({ popup = false, onClose }: { popup?: boolean; onClose?: () => void }) {
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [submitted, setSubmitted] = useState(false);
 
@@ -68,7 +68,7 @@ export default function MarriageReadinessAssessment() {
     <main>
       <SiteHeader />
       <section className="readiness-page">
-        <section className="section-hero">
+        {!popup && <section className="section-hero">
           <div className="section-hero-inner">
             <div>
               <p className="kicker light">02 · FAMILY</p>
@@ -142,7 +142,7 @@ export default function MarriageReadinessAssessment() {
               A score does not make a marriage decision for you. Use the areas below to identify conversations that deserve more attention. Where appropriate, consider guidance from a trusted Alangizi, family elder, counsellor or other qualified adviser.
             </div>
 
-            <section className="readiness-grid">
+            </>\n            <section className="readiness-grid">
               <div className="readiness-panel">
                 <p className="eyebrow">AREAS TO EXPLORE</p>
                 <h2>Topics for further discussion</h2>
