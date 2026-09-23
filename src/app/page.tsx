@@ -5,8 +5,35 @@ import MarriageReadinessAssessment from "./marriage-family/readiness/MarriageRea
 
 export default function Home(){
   const [readinessOpen,setReadinessOpen]=useState(false);
+
   return <main className="mwambo-landing">
     <section className="landing-hero" aria-label="Mwambo">
+      <div className="network-bg" aria-hidden="true">
+        <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+          <g className="network-lines" fill="none" stroke="currentColor">
+            <path d="M-80 180 L180 95 L410 205 L620 82 L875 180 L1125 72 L1510 210" />
+            <path d="M-30 480 L210 335 L430 470 L680 350 L930 470 L1190 320 L1490 450" />
+            <path d="M-40 780 L210 640 L455 760 L690 625 L945 745 L1200 610 L1490 755" />
+            <path d="M180 95 L210 335 L210 640" />
+            <path d="M410 205 L430 470 L455 760" />
+            <path d="M620 82 L680 350 L690 625" />
+            <path d="M875 180 L930 470 L945 745" />
+            <path d="M1125 72 L1190 320 L1200 610" />
+          </g>
+          <g className="network-dots" fill="currentColor">
+            <circle cx="180" cy="95" r="4"/><circle cx="410" cy="205" r="3.5"/><circle cx="620" cy="82" r="4"/>
+            <circle cx="875" cy="180" r="3.5"/><circle cx="1125" cy="72" r="4"/>
+            <circle cx="210" cy="335" r="4"/><circle cx="430" cy="470" r="3.5"/><circle cx="680" cy="350" r="4"/>
+            <circle cx="930" cy="470" r="3.5"/><circle cx="1190" cy="320" r="4"/>
+            <circle cx="210" cy="640" r="3.5"/><circle cx="455" cy="760" r="4"/><circle cx="690" cy="625" r="3.5"/>
+            <circle cx="945" cy="745" r="4"/><circle cx="1200" cy="610" r="3.5"/>
+          </g>
+        </svg>
+      </div>
+
+      <div className="landing-glow landing-glow-one" aria-hidden="true" />
+      <div className="landing-glow landing-glow-two" aria-hidden="true" />
+
       <div className="landing-inner">
         <p className="landing-motto">ONE ZAMBIA. ONE NATION</p>
         <div className="zambia-mark" aria-hidden="true"><span/><span/><span/><span/><span/></div>
