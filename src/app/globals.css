@@ -61,3 +61,44 @@ footer{background:#061f35;color:#c7d8e2;padding:42px max(7vw,20px);display:flex;
 .readiness-content>.back{display:block;padding-top:42px}
 .readiness-content>.eyebrow{margin-top:28px}
 @media(max-width:600px){.readiness-content{width:min(100% - 28px,1160px)}}
+
+
+/* Mwambo landing — full-screen VSI blue network treatment */
+.mwambo-landing{min-height:100svh;background:var(--regal);color:#fff}
+.landing-hero{position:relative;isolation:isolate;min-height:100svh;display:grid;place-items:center;overflow:hidden;background:var(--regal);color:#fff}
+.landing-inner{position:relative;z-index:3;width:min(920px,calc(100% - 36px));padding:48px 0 54px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.landing-motto{margin:0 0 28px;color:rgba(255,255,255,.72);font-size:11px;font-weight:800;letter-spacing:.28em}
+.zambia-mark{display:flex;gap:5px;align-items:flex-end;height:22px;margin-bottom:19px}
+.zambia-mark span{display:block;width:5px;border-radius:2px;background:var(--gold);transform:skew(-12deg)}
+.zambia-mark span:nth-child(1){height:12px}.zambia-mark span:nth-child(2){height:18px}.zambia-mark span:nth-child(3){height:22px}.zambia-mark span:nth-child(4){height:16px}.zambia-mark span:nth-child(5){height:10px}
+.landing-inner h1{margin:0;color:#fff;font-size:clamp(64px,12vw,150px);font-weight:900;line-height:.88;letter-spacing:-.075em;text-shadow:0 10px 45px rgba(0,0,0,.16)}
+.landing-tagline{margin:22px 0 0;color:rgba(255,255,255,.86);font-size:clamp(15px,2vw,20px);font-weight:500;letter-spacing:.02em}
+.landing-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:42px}
+.landing-button{min-height:48px;display:inline-flex;align-items:center;justify-content:center;padding:0 22px;border-radius:999px;border:1px solid rgba(255,255,255,.22);font:800 11px/1 Inter,Arial,sans-serif;letter-spacing:.02em;cursor:pointer;transition:transform .2s ease,background .2s ease,border-color .2s ease,box-shadow .2s ease}
+.landing-button:hover{transform:translateY(-2px)}
+.landing-button.readiness{background:var(--gold);border-color:var(--gold);color:var(--regal);box-shadow:0 12px 30px rgba(0,0,0,.16)}
+.landing-button.readiness:hover{background:#ffe45c;border-color:#ffe45c}
+.landing-button.community{background:rgba(255,255,255,.06);color:#fff;backdrop-filter:blur(8px)}
+.landing-button.community:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.38)}
+.network-bg{position:absolute;inset:-1px;z-index:0;color:rgba(255,255,255,.16);pointer-events:none}
+.network-bg svg{width:100%;height:100%;display:block}
+.network-lines{stroke-width:1;stroke-opacity:.48}
+.network-dots{opacity:.75}
+.network-dots circle{filter:drop-shadow(0 0 5px rgba(255,255,255,.22))}
+.landing-glow{position:absolute;z-index:1;width:38vw;height:38vw;max-width:560px;max-height:560px;border-radius:50%;background:rgba(60,105,151,.18);filter:blur(70px);pointer-events:none}
+.landing-glow-one{left:-16vw;top:-18vw}
+.landing-glow-two{right:-18vw;bottom:-20vw;background:rgba(255,214,10,.07)}
+.landing-hero:after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(circle at center,transparent 0%,transparent 45%,rgba(0,24,47,.22) 100%)}
+@media(max-width:600px){
+  .landing-inner{width:min(100% - 28px,920px);padding:36px 0 40px}
+  .landing-motto{font-size:9px;letter-spacing:.22em;margin-bottom:25px}
+  .landing-inner h1{font-size:clamp(58px,19vw,92px)}
+  .landing-tagline{font-size:15px;margin-top:18px}
+  .landing-actions{width:100%;margin-top:34px;gap:9px}
+  .landing-button{width:100%;max-width:320px}
+  .network-bg{inset:-8% -30%}
+  .network-lines{stroke-width:1.2;stroke-opacity:.38}
+}
+@media(prefers-reduced-motion:reduce){
+  .landing-button{transition:none}
+}
