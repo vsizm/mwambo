@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prebuild": "node scripts/apply-marriage-family-migration.mjs"
+    "prebuild": "node scripts/apply-marriage-family-migration.mjs && node scripts/apply-assessment-feedback-migration.mjs"
   },
   "dependencies": {
     "next": "^15.5.0",
