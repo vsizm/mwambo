@@ -38,6 +38,11 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [submitted, setSubmitted] = useState(false);
   const [advisoryOpen, setAdvisoryOpen] = useState(popup);
+  const [feedbackRating, setFeedbackRating] = useState(0);
+  const [feedbackUsefulness, setFeedbackUsefulness] = useState("");
+  const [feedbackClarity, setFeedbackClarity] = useState("");
+  const [feedbackComment, setFeedbackComment] = useState("");
+  const [feedbackState, setFeedbackState] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   const result = useMemo(() => {
     if (!submitted) return null;
@@ -58,6 +63,32 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
     }
     setSubmitted(true);
     window.scrollTo({ top: 250, behavior: "smooth" });
+  };
+
+  const submitFeedback = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!feedbackRating || !feedbackUsefulness || !feedbackClarity) {
+      setFeedbackState("error");
+      return;
+    }
+
+    setFeedbackState("sending");
+    try {
+      const response = await fetch("/api/marriage-readiness-feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rating: feedbackRating,
+          usefulness: feedbackUsefulness,
+          clarity: feedbackClarity,
+          comment: feedbackComment
+        })
+      });
+      if (!response.ok) throw new Error("Feedback submission failed");
+      setFeedbackState("sent");
+    } catch {
+      setFeedbackState("error");
+    }
   };
 
   const reset = () => {
@@ -206,6 +237,56 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
                 <p className="eyebrow">CULTURAL CONTEXT</p>
                 <h2>Make room for family and cultural context</h2>
                 <p>Zambian marriage practices vary across cultural groups, families and circumstances. Use this assessment alongside informed conversations about customary expectations, family relationships, responsibilities and any civil or customary process relevant to you.</p>
+              </section>
+
+              <section className="readiness-panel readiness-feedback">
+                <div>
+                  <p className="eyebrow">HELP US IMPROVE</p>
+                  <h2>How was your experience?</h2>
+                  <p>Rate the assessment itself — not whether the percentage is a prediction of your future marriage. Your feedback helps us improve the clarity and usefulness of Mwambo.</p>
+                </div>
+                {feedbackState === "sent" ? (
+                  <div className="feedback-thanks" role="status">
+                    <strong>Thank you for your feedback.</strong>
+                    <span>Your response has been recorded.</span>
+                  </div>
+                ) : (
+                  <form onSubmit={submitFeedback} className="feedback-form">
+                    <fieldset>
+                      <legend>Overall experience</legend>
+                      <div className="feedback-stars" aria-label="Rate your experience from 1 to 5">
+                        {[1,2,3,4,5].map(n => (
+                          <button type="button" key={n} className={feedbackRating >= n ? "active" : ""} aria-label={`${n} out of 5`} aria-pressed={feedbackRating === n} onClick={() => setFeedbackRating(n)}>★</button>
+                        ))}
+                      </div>
+                    </fieldset>
+                    <label>
+                      Was the assessment useful?
+                      <select value={feedbackUsefulness} onChange={e => setFeedbackUsefulness(e.target.value)} required>
+                        <option value="">Select one</option>
+                        <option value="very_useful">Very useful</option>
+                        <option value="somewhat_useful">Somewhat useful</option>
+                        <option value="not_very_useful">Not very useful</option>
+                        <option value="not_useful">Not useful</option>
+                      </select>
+                    </label>
+                    <label>
+                      Were the questions and results clear?
+                      <select value={feedbackClarity} onChange={e => setFeedbackClarity(e.target.value)} required>
+                        <option value="">Select one</option>
+                        <option value="very_clear">Very clear</option>
+                        <option value="mostly_clear">Mostly clear</option>
+                        <option value="unclear">Unclear</option>
+                      </select>
+                    </label>
+                    <label>
+                      Anything we could improve? <span>(optional)</span>
+                      <textarea value={feedbackComment} onChange={e => setFeedbackComment(e.target.value)} maxLength={1000} rows={3} placeholder="Tell us what would make the assessment better." />
+                    </label>
+                    {feedbackState === "error" && <p className="feedback-error" role="alert">Please complete the rating, usefulness and clarity questions, then try again.</p>}
+                    <button className="feedback-submit" type="submit" disabled={feedbackState === "sending"}>{feedbackState === "sending" ? "Sending…" : "Submit feedback"}</button>
+                  </form>
+                )}
               </section>
 
               <div className="readiness-actions">
