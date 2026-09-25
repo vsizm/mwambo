@@ -51,8 +51,10 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
     const pct = Math.round((total / (QUESTIONS.length * 10)) * 100);
     const focus = scores.filter(x => x.score <= 6);
     const strengths = scores.filter(x => x.score >= 8);
+    const attentionCount = scores.filter(x => x.score <= 4).length;
+    const moderateCount = scores.filter(x => x.score >= 5 && x.score <= 7).length;
     const tier = pct < 50 ? "Preparation Needed" : pct < 75 ? "Further Preparation Recommended" : "Positive Readiness Indicators";
-    return { scores, pct, focus, strengths, tier };
+    return { scores, pct, focus, strengths, attentionCount, moderateCount, tier };
   }, [answers, submitted]);
 
   const submit = (e: React.FormEvent) => {
@@ -192,14 +194,22 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
                   <small>{result.tier}</small>
                 </div>
               )}
-              <div className="readiness-notice">
-                A score does not make a marriage decision for you. Use the areas below to identify conversations that deserve more attention. Where appropriate, consider guidance from a trusted Alangizi, family elder, counsellor or other qualified adviser.
-              </div>
+              <section className="readiness-result-intro">
+                <div className="result-score-card">
+                  <span>YOUR READINESS SCORE</span>
+                  <strong>{result.pct}%</strong>
+                  <small>{result.tier}</small>
+                </div>
+                <div className="readiness-notice">
+                  <strong>Your score is a conversation starter — not a marriage decision.</strong>
+                  <p>Use the areas below to identify conversations that deserve more attention. Where appropriate, consider guidance from a trusted Alangizi, family elder, counsellor or other qualified adviser.</p>
+                </div>
+              </section>
 
               <section className="readiness-grid">
                 <div className="readiness-panel">
-                  <p className="eyebrow">AREAS TO EXPLORE</p>
-                  <h2>Topics for further discussion</h2>
+                  <p className="eyebrow">YOUR NEXT CONVERSATIONS</p>
+                  <h2>Topics to explore</h2>
                   {result.focus.length ? (
                     <div className="chips">{result.focus.map(x => <span key={x.category}>{x.category}</span>)}</div>
                   ) : (
@@ -207,18 +217,27 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
                   )}
                 </div>
                 <div className="readiness-panel">
-                  <p className="eyebrow">FOUNDATIONAL AREAS</p>
-                  <h2>Strong indicators</h2>
+                  <p className="eyebrow">POSITIVE INDICATORS</p>
+                  <h2>Areas showing stronger alignment</h2>
                   {result.strengths.length ? (
                     <div className="chips strong">{result.strengths.map(x => <span key={x.category}>{x.category}</span>)}</div>
                   ) : (
-                    <p>No domain reached the strong-indicator threshold. This is an invitation for further reflection, not a judgment.</p>
+                    <p>No domain reached the positive-indicator threshold. This is an invitation for further reflection, not a judgment.</p>
                   )}
                 </div>
               </section>
 
+              <section className="readiness-panel result-summary">
+                <p className="eyebrow">WHERE YOU STAND</p>
+                <div className="summary-stats">
+                  <div><strong>{result.attentionCount}</strong><span>Needs attention</span></div>
+                  <div><strong>{result.moderateCount}</strong><span>Moderate</span></div>
+                  <div><strong>{result.strengths.length}</strong><span>Positive indicators</span></div>
+                </div>
+              </section>
+
               <section className="readiness-panel scorecard">
-                <div className="result-legend" aria-label="Assessment result key"><span className="legend-good">Good</span><span className="legend-moderate">Moderate</span><span className="legend-bad">Needs attention</span></div>
+                <div className="result-legend" aria-label="Assessment result key"><span className="legend-good">Positive</span><span className="legend-moderate">Moderate</span><span className="legend-bad">Needs attention</span></div>
                 <p className="eyebrow">DOMAIN BREAKDOWN</p>
                 <h2>10-domain scorecard</h2>
                 {result.scores.map((x, i) => (
@@ -228,7 +247,7 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
                       <p>{x.rationale}</p>
                       {x.score <= 6 && <small>{guidanceFor(x.category)}</small>}
                     </div>
-                    <div className={`score-value ${x.score >= 8 ? "score-good" : x.score >= 5 ? "score-moderate" : "score-bad"}`}><strong>{x.score}/10</strong><span>{x.score >= 8 ? "Good" : x.score >= 5 ? "Moderate" : "Needs attention"}</span></div>
+                    <div className={`score-value ${x.score >= 8 ? "score-good" : x.score >= 5 ? "score-moderate" : "score-bad"}`}><strong>{x.score}/10</strong><span>{x.score >= 8 ? "Positive" : x.score >= 5 ? "Moderate" : "Needs attention"}</span></div>
                   </div>
                 ))}
               </section>
