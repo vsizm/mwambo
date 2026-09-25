@@ -187,13 +187,6 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
             </>
           ) : result ? (
             <>
-              {popup && (
-                <div className="popup-score-result">
-                  <span>YOUR READINESS SCORE</span>
-                  <strong>{result.pct}%</strong>
-                  <small>{result.tier}</small>
-                </div>
-              )}
               <section className="readiness-result-intro">
                 <div className="result-score-card">
                   <span>YOUR READINESS SCORE</span>
