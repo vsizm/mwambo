@@ -49,12 +49,13 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
     const scores = QUESTIONS.map(q => ({ ...q, score: answers[q.id] ?? 0 }));
     const total = scores.reduce((sum, item) => sum + item.score, 0);
     const pct = Math.round((total / (QUESTIONS.length * 10)) * 100);
-    const focus = scores.filter(x => x.score <= 6);
+    const priorityTopics = scores.filter(x => x.score <= 4);
+    const discussionTopics = scores.filter(x => x.score >= 5 && x.score <= 7);
     const strengths = scores.filter(x => x.score >= 8);
-    const attentionCount = scores.filter(x => x.score <= 4).length;
-    const moderateCount = scores.filter(x => x.score >= 5 && x.score <= 7).length;
+    const attentionCount = priorityTopics.length;
+    const moderateCount = discussionTopics.length;
     const tier = pct < 50 ? "Preparation Needed" : pct < 75 ? "Further Preparation Recommended" : "Positive Readiness Indicators";
-    return { scores, pct, focus, strengths, attentionCount, moderateCount, tier };
+    return { scores, pct, priorityTopics, discussionTopics, strengths, attentionCount, moderateCount, tier };
   }, [answers, submitted]);
 
   const submit = (e: React.FormEvent) => {
@@ -203,10 +204,19 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
                 <div className="readiness-panel">
                   <p className="eyebrow">YOUR NEXT CONVERSATIONS</p>
                   <h2>Topics to explore</h2>
-                  {result.focus.length ? (
-                    <div className="chips">{result.focus.map(x => <span key={x.category}>{x.category}</span>)}</div>
+                  {result.priorityTopics.length ? (
+                    <>
+                      <p className="result-section-note">Start with these areas first.</p>
+                      <div className="chips">{result.priorityTopics.map(x => <span key={x.category}>{x.category}</span>)}</div>
+                    </>
                   ) : (
-                    <p>No domain fell within the focused-discussion threshold. Continue revisiting these conversations as circumstances change.</p>
+                    <p>No domain is currently in the priority-attention range. Continue revisiting these conversations as circumstances change.</p>
+                  )}
+                  {result.discussionTopics.length > 0 && (
+                    <div className="secondary-topics">
+                      <p className="result-section-note">Also discuss</p>
+                      <div className="chips muted">{result.discussionTopics.map(x => <span key={x.category}>{x.category}</span>)}</div>
+                    </div>
                   )}
                 </div>
                 <div className="readiness-panel">
