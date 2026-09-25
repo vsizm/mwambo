@@ -206,7 +206,7 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
                   <h2>Topics to explore</h2>
                   {result.priorityTopics.length ? (
                     <>
-                      <p className="result-section-note">Start with these areas first.</p>
+                      <p className="result-section-note"><strong>START HERE</strong><span>These areas received the lowest scores and may be the most useful conversations to have first.</span></p>
                       <div className="chips">{result.priorityTopics.map(x => <span key={x.category}>{x.category}</span>)}</div>
                     </>
                   ) : (
@@ -220,18 +220,19 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
                   )}
                 </div>
                 <div className="readiness-panel">
-                  <p className="eyebrow">POSITIVE INDICATORS</p>
-                  <h2>Areas showing stronger alignment</h2>
+                  <p className="eyebrow">{result.strengths.length ? "POSITIVE INDICATORS" : "NO STRONG ALIGNMENT INDICATORS YET"}</p>
+                  <h2>{result.strengths.length ? "Areas showing stronger alignment" : "Keep building the conversation"}</h2>
                   {result.strengths.length ? (
                     <div className="chips strong">{result.strengths.map(x => <span key={x.category}>{x.category}</span>)}</div>
                   ) : (
-                    <p>No domain reached the positive-indicator threshold. This is an invitation for further reflection, not a judgment.</p>
+                    <p>These areas may benefit from more discussion and reflection before moving forward with marriage preparation.</p>
                   )}
                 </div>
               </section>
 
               <section className="readiness-panel result-summary">
                 <p className="eyebrow">WHERE YOU STAND</p>
+                <p className="result-section-note summary-note">Your results show where conversations may need more attention right now.</p>
                 <div className="summary-stats">
                   <div><strong>{result.attentionCount}</strong><span>Needs attention</span></div>
                   <div><strong>{result.moderateCount}</strong><span>Moderate</span></div>
@@ -240,6 +241,7 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
               </section>
 
               <section className="readiness-panel scorecard">
+                <div className="scorecard-intro"><p>Use each score as a prompt for conversation. The lower-scoring domains are shown first above so you can focus your attention where it may be most useful.</p></div>
                 <div className="result-legend" aria-label="Assessment result key"><span className="legend-good">Positive</span><span className="legend-moderate">Moderate</span><span className="legend-bad">Needs attention</span></div>
                 <p className="eyebrow">DOMAIN BREAKDOWN</p>
                 <h2>10-domain scorecard</h2>
