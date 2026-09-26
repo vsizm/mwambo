@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { sql } from "../../../lib/db";
-import { requireMwamboAdmin } from "../../../lib/admin";
+import { sql } from "../../../../lib/db";
+import { requireMwamboAdmin } from "../../../../lib/admin";
 
 export const dynamic = "force-dynamic";
 
