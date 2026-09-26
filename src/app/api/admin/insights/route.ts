@@ -55,7 +55,7 @@ export async function GET() {
     vercelQuery("visits", "count", 30),
     vercelQuery("visits", "aggregate", 7, "day"),
     vercelQuery("visits", "aggregate", 7, "requestPath"),
-    vercelQuery("events", "aggregate", 7, "day"),
+    vercelQuery("events", "aggregate", 7, "eventName"),
   ]);
 
   let feedback: FeedbackRow[] = [];
@@ -88,7 +88,7 @@ export async function GET() {
       configured: !!process.env.VERCEL_TOKEN,
     },
     events: {
-      daily: rows(dailyEvents),
+      byName: rows(dailyEvents),
     },
     feedback: {
       configured: feedbackConfigured,
