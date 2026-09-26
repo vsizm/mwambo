@@ -109,11 +109,15 @@ export default function InsightsDashboard() {
             <article className="insight-card">
               <div className="insight-card-head"><div><span className="kicker">READINESS</span><h2>Assessment journey</h2></div><small>Tracked events</small></div>
               <div className="journey-metrics">
-                <div><span>Assessment starts</span><strong>—</strong></div>
-                <div><span>Assessments completed</span><strong>—</strong></div>
-                <div><span>Completion rate</span><strong>—</strong></div>
+                {(() => {
+                  const startRow = data.events.byName.find((row:any) => String(valueOf(row,["eventName","name","event"])).toLowerCase().includes("started"));
+                  const completedRow = data.events.byName.find((row:any) => String(valueOf(row,["eventName","name","event"])).toLowerCase().includes("completed"));
+                  const starts = Number(valueOf(startRow,["count","value","visits","views"]));
+                  const completed = Number(valueOf(completedRow,["count","value","visits","views"]));
+                  return <><div><span>Assessment starts</span><strong>{starts || "—"}</strong></div><div><span>Assessments completed</span><strong>{completed || "—"}</strong></div><div><span>Completion rate</span><strong>{starts ? Math.round((completed / starts) * 100) + "%" : "—"}</strong></div></>;
+                })()}
               </div>
-              <p className="setup-note">The dashboard is ready for these events. Once custom-event reporting is available for the project, the readiness funnel will populate automatically.</p>
+              <p className="setup-note">Readiness events are shown from the rolling 7-day window. If custom-event data is unavailable, traffic and feedback remain available.</p>
             </article>
           </section>
 
