@@ -1,4 +1,4 @@
-import { requireMwamboAdmin } from "../../lib/admin";
+import { requireMwamboAdmin } from "../../../lib/admin";
 import InsightsDashboard from "./InsightsDashboard";
 
 export const dynamic = "force-dynamic";
