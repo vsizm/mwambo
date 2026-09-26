@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { track } from "@vercel/analytics";
 import { SiteHeader, SiteFooter } from "../../../components/SiteChrome";
 
 type Question = { id: number; category: string; prompt: string; rationale: string };
@@ -43,6 +44,7 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
   const [feedbackClarity, setFeedbackClarity] = useState("");
   const [feedbackComment, setFeedbackComment] = useState("");
   const [feedbackState, setFeedbackState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [assessmentStarted, setAssessmentStarted] = useState(false);
 
   const result = useMemo(() => {
     if (!submitted) return null;
@@ -65,6 +67,7 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
       return;
     }
     setSubmitted(true);
+    track("Marriage Readiness Completed");
     window.scrollTo({ top: 250, behavior: "smooth" });
   };
 
@@ -169,7 +172,13 @@ export default function MarriageReadinessAssessment({ popup = false, onClose }: 
                       </div>
                       <div className="scale" role="group" aria-label={q.category}>
                         {[1,2,3,4,5,6,7,8,9,10].map(n => (
-                          <button type="button" key={n} aria-pressed={value === n} className={value === n ? "selected" : ""} onClick={() => setAnswers(a => ({ ...a, [q.id]: n }))}>{n}</button>
+                          <button type="button" key={n} aria-pressed={value === n} className={value === n ? "selected" : ""} onClick={() => {
+                          if (!assessmentStarted) {
+                            setAssessmentStarted(true);
+                            track("Marriage Readiness Started");
+                          }
+                          setAnswers(a => ({ ...a, [q.id]: n }));
+                        }}>{n}</button>
                         ))}
                       </div>
                       <div className="scale-labels">
