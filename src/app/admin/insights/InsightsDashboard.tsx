@@ -7,7 +7,7 @@ type Feedback = { id:number; rating:number; usefulness:string; clarity:string; c
 type Data = {
   generatedAt:string;
   traffic:{today:number|null;sevenDays:number|null;thirtyDays:number|null;daily:any[];topPages:any[];configured:boolean};
-  events:{daily:any[]};
+  events:{byName:any[]};
   feedback:{configured:boolean;total:number;averageRating:number;fiveStar:number;veryUseful:number;veryClear:number;recent:Feedback[]};
 };
 
